@@ -18,7 +18,7 @@ jobs:
   compare-versions-dev:
     name: Compare API versions (debug)
     if: false
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ Linux ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -33,7 +33,7 @@ jobs:
 
   compare-versions:
     name: Compare API versions
-    runs-on: [ ubuntu-latest, self-hosted ]
+    runs-on: [ Linux, self-hosted ]
     outputs:
       # updated_api_names: is a JSON array of API names that have changed
       updated_api_names: ${{ steps.compare-hashes.outputs.updated_api_names }}
@@ -98,7 +98,7 @@ jobs:
 
   update-clients:
     needs: compare-versions
-    runs-on: [ ubuntu-latest, self-hosted ]
+    runs-on: [ Linux, self-hosted ]
     strategy:
       matrix:
         api_name: ${{ fromJson(needs.compare-versions.outputs.updated_api_names) }}
