@@ -1,0 +1,193 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+
+name: Monitor API version and generate new client
+
+on:
+  # workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  api_names: telegram-bot-api shikimori-graphql-api jikan-api
+
+jobs:
+  compare-versions-dev:
+    name: Compare API versions
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          sparse-checkout: |
+            hash-calculators/
+            schemas.json
+    outputs:
+      # updated_api_names: is a JSON array of API names that have changed
+      updated_api_names: '["telegram-bot-api","jikan-api"]'
+      # hashes: is a space-separated list of hashes (one per entry in env.api_names)
+      hashes: "CRC32 160603312 CRC32"
+
+  compare-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      # updated_api_names: is a JSON array of API names that have changed
+      updated_api_names: ${{ steps.compare-hashes.outputs.updated_api_names }}
+      # hashes: is a space-separated list of hashes (one per entry in env.api_names)
+      hashes: ${{ steps.fetch-latest-hashes.outputs.hashes }}
+      # timestamp: is the current UTC timestamp in ISO format
+      timestamp: ${{ steps.initialize-timestamp.outputs.timestamp }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Fetch latest versions
+        id: fetch-latest-hashes
+        run: |
+          pids=()
+
+          for api in $api_names; do
+            bash hash-calculators/$api.sh > "$api.hash" &
+            pids+=($!)
+          done
+
+          for pid in "${pids[@]}"; do
+            wait $pid || exit 1
+          done
+
+          hashes=""
+          for api in $api_names; do
+              hash=$(cat "$api.hash")
+              hashes+="$hash "
+          done
+          echo "hashes=$hashes" >> "$GITHUB_OUTPUT"
+
+      - name: Fetch registered hashes
+        id: fetch-registered-hashes
+        run: |
+          hashes=""
+          for api in $api_names; do
+            hash=$(jq -r ".[\"$api\"].source_hash" schemas.json)
+            hashes+="$hash "
+          done
+          echo "hashes=$hashes" >> "$GITHUB_OUTPUT"
+
+      - name: Compare hashes
+        id: compare-hashes
+        run: |
+          latest_hashes=(${{ steps.fetch-latest-hashes.outputs.hashes }})
+          registered_hashes=(${{ steps.fetch-registered-hashes.outputs.hashes }})
+          api_names=($api_names)
+
+          updated_apis=""
+          for ((i=0; i<${#latest_hashes[@]}; i++)); do
+            if [[ "${latest_hashes[$i]}" != "${registered_hashes[$i]}" ]]; then
+              echo "${api_names[$i]} hash changed (${latest_hashes[$i]} != ${registered_hashes[$i]})"
+              updated_apis+="\"${api_names[$i]}\","
+            else
+              echo "${api_names[$i]} hash unchanged (${latest_hashes[$i]} == ${registered_hashes[$i]})"
+            fi
+          done
+
+          # Remove trailing comma and format as JSON array
+          json_array="[$(echo "$updated_apis" | sed 's/,$//')]"
+          echo "updated_api_names=$json_array" >> "$GITHUB_OUTPUT"
+
+  update-clients:
+    needs: compare-versions
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        api_name: ${{ fromJson(needs.compare-versions.outputs.updated_api_names) }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run the generator
+        run: bash generators/${{ matrix.api_name }}.sh schemas/${{ matrix.api_name }}/
+
+      - name: Parse schema type
+        id: parse-schema-type
+        run: |
+          if [ -f "schemas/${{ matrix.api_name }}/openapi.json" ]; then
+            echo "schema_type=openapi" >> $GITHUB_OUTPUT
+          elif [ -f "schemas/${{ matrix.api_name }}/graphql.json" ]; then
+            echo "schema_type=graphql" >> $GITHUB_OUTPUT
+          else
+            echo "Unsupported schema type" >&2
+            exit 1
+          fi
+
+      - name: Reformat generated code
+        run: |
+          if [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "openapi" ]; then
+            jq '.' schemas/${{ matrix.api_name }}/openapi.json > schemas/${{ matrix.api_name }}/openapi.json.tmp
+            mv schemas/${{ matrix.api_name }}/openapi.json.tmp schemas/${{ matrix.api_name }}/openapi.json
+          elif [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "graphql" ]; then
+            jq '.' schemas/${{ matrix.api_name }}/graphql.json > schemas/${{ matrix.api_name }}/graphql.json.tmp
+            mv schemas/${{ matrix.api_name }}/graphql.json.tmp schemas/${{ matrix.api_name }}/graphql.json
+          fi
+
+      - name: Parse version
+        id: parse-version
+        run: |
+          if [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "openapi" ]; then
+            version=$(jq -r '.info.version' schemas/${{ matrix.api_name }}/openapi.json)
+            echo "api_version=$version" >> $GITHUB_OUTPUT
+          elif [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "graphql" ]; then
+            # GraphQL schema versioning is not standardized, so we use a placeholder
+            echo "api_version=1.0.0" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Update schemas.json
+        shell: python
+        env:
+          api_names: ${{ env.api_names }}
+          hashes: ${{ needs.compare-versions.outputs.hashes }}
+          api_name: ${{ matrix.api_name }}
+          api_version: ${{ steps.parse-version.outputs.api_version }}
+        run: |
+          import datetime
+          import json
+          import os
+
+          apis = os.environ['api_names']
+          hashes = os.environ['hashes']
+          api_name = os.environ['api_name']
+          api_version = os.environ['api_version']
+
+          api_index = apis.split().index(api_name)
+          api_hash = hashes.split()[api_index]
+
+          timestamp = datetime.datetime.utcnow()
+          iso_date = timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")
+          digits_date = timestamp.strftime("%Y%m%d%H%M%S")
+
+          with open('schemas.json', 'r') as f:
+              data = json.load(f)
+
+          data[api_name] = {
+            "schema_version": f"{api_version}+{digits_date}",
+            "source_version": api_version,
+            "source_hash": api_hash,
+            "updated_at": iso_date,
+          }
+
+          with open('schemas.json', 'w') as f:
+              json.dump(data, f, indent=2)
+
+      - name: Show updated schemas.json
+        run: cat schemas.json
+
+      - name: Create Pull Request with current (uncommitted) changes
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update client for ${{ matrix.api_name }}"
+          title: "Update client for ${{ matrix.api_name }}"
+          body: "This PR updates the client to version ${{ steps.parse-version.outputs.api_version }} for the API ${{ matrix.api_name }}."
+          branch: "new_version/${{ matrix.api_name }}_${{ steps.parse-version.outputs.api_version }}"
+          base: master
+          add-paths: |
+            schemas.json
+            schemas/
