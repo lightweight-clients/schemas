@@ -81,6 +81,7 @@ jobs:
   update-clients:
     needs: compare-versions
     runs-on: ubuntu-latest
+    if: needs.compare-versions.outputs.updated_api_names != '[]'
     strategy:
       matrix:
         api_name: ${{ fromJson(needs.compare-versions.outputs.updated_api_names) }}
