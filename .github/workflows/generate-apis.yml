@@ -16,9 +16,9 @@ env:
 
 jobs:
   compare-versions-dev:
-    name: Compare API versions
+    name: Compare API versions (debug)
     if: false
-    runs-on: ubuntu-latest
+    runs-on: [ ubuntu-latest ]
     steps:
       - uses: actions/checkout@v3
         with:
@@ -32,7 +32,8 @@ jobs:
       hashes: "CRC32 160603312 CRC32"
 
   compare-versions:
-    runs-on: ubuntu-latest
+    name: Compare API versions
+    runs-on: [ ubuntu-latest, self-hosted ]
     outputs:
       # updated_api_names: is a JSON array of API names that have changed
       updated_api_names: ${{ steps.compare-hashes.outputs.updated_api_names }}
@@ -97,7 +98,7 @@ jobs:
 
   update-clients:
     needs: compare-versions
-    runs-on: ubuntu-latest
+    runs-on: [ ubuntu-latest, self-hosted ]
     strategy:
       matrix:
         api_name: ${{ fromJson(needs.compare-versions.outputs.updated_api_names) }}
