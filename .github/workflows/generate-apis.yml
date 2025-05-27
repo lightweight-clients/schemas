@@ -15,31 +15,14 @@ env:
   api_names: telegram-bot-api shikimori-graphql-api jikan-api
 
 jobs:
-  compare-versions-dev:
-    name: Compare API versions
-    if: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          sparse-checkout: |
-            hash-calculators/
-            schemas.json
-    outputs:
-      # updated_api_names: is a JSON array of API names that have changed
-      updated_api_names: '["telegram-bot-api","jikan-api"]'
-      # hashes: is a space-separated list of hashes (one per entry in env.api_names)
-      hashes: "CRC32 160603312 CRC32"
-
   compare-versions:
+    name: Compare API versions
     runs-on: ubuntu-latest
     outputs:
       # updated_api_names: is a JSON array of API names that have changed
       updated_api_names: ${{ steps.compare-hashes.outputs.updated_api_names }}
       # hashes: is a space-separated list of hashes (one per entry in env.api_names)
       hashes: ${{ steps.fetch-latest-hashes.outputs.hashes }}
-      # timestamp: is the current UTC timestamp in ISO format
-      timestamp: ${{ steps.initialize-timestamp.outputs.timestamp }}
     steps:
       - uses: actions/checkout@v3
 
