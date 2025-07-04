@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.0.0"
+    "version": "9.1.0"
   },
   "servers": [
     {
@@ -678,6 +678,9 @@
             "type": "boolean",
             "default": true
           },
+          "checklist": {
+            "$ref": "#/components/schemas/Checklist"
+          },
           "contact": {
             "$ref": "#/components/schemas/Contact"
           },
@@ -780,6 +783,15 @@
           },
           "chat_background_set": {
             "$ref": "#/components/schemas/ChatBackground"
+          },
+          "checklist_tasks_done": {
+            "$ref": "#/components/schemas/ChecklistTasksDone"
+          },
+          "checklist_tasks_added": {
+            "$ref": "#/components/schemas/ChecklistTasksAdded"
+          },
+          "direct_message_price_changed": {
+            "$ref": "#/components/schemas/DirectMessagePriceChanged"
           },
           "forum_topic_created": {
             "$ref": "#/components/schemas/ForumTopicCreated"
@@ -990,6 +1002,9 @@
           "has_media_spoiler": {
             "type": "boolean",
             "default": true
+          },
+          "checklist": {
+            "$ref": "#/components/schemas/Checklist"
           },
           "contact": {
             "$ref": "#/components/schemas/Contact"
@@ -1687,6 +1702,166 @@
         },
         "type": "object"
       },
+      "ChecklistTask": {
+        "description": "Describes a task in a checklist.",
+        "required": [
+          "id",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          },
+          "text_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "completed_by_user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "completion_date": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "Checklist": {
+        "description": "Describes a checklist.",
+        "required": [
+          "title",
+          "tasks"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "title_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChecklistTask"
+            }
+          },
+          "others_can_add_tasks": {
+            "type": "boolean",
+            "default": true
+          },
+          "others_can_mark_tasks_as_done": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "type": "object"
+      },
+      "InputChecklistTask": {
+        "description": "Describes a task to add to a checklist.",
+        "required": [
+          "id",
+          "text"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "text_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "InputChecklist": {
+        "description": "Describes a checklist to create.",
+        "required": [
+          "title",
+          "tasks"
+        ],
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "title_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputChecklistTask"
+            }
+          },
+          "others_can_add_tasks": {
+            "type": "boolean"
+          },
+          "others_can_mark_tasks_as_done": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "type": "object"
+      },
+      "ChecklistTasksDone": {
+        "description": "Describes a service message about checklist tasks marked as done or not done.",
+        "properties": {
+          "checklist_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "marked_as_done_task_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "marked_as_not_done_task_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ChecklistTasksAdded": {
+        "description": "Describes a service message about tasks added to a checklist.",
+        "properties": {
+          "checklist_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChecklistTask"
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ],
+        "type": "object"
+      },
       "Location": {
         "description": "This object represents a point on the map.",
         "required": [
@@ -2191,6 +2366,21 @@
         ],
         "properties": {
           "paid_message_star_count": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "DirectMessagePriceChanged": {
+        "description": "Describes a service message about a change in the price of direct messages sent to a channel chat.",
+        "required": [
+          "are_direct_messages_enabled"
+        ],
+        "properties": {
+          "are_direct_messages_enabled": {
+            "type": "boolean"
+          },
+          "direct_message_star_count": {
             "type": "integer"
           }
         },
@@ -3905,10 +4095,16 @@
           "origin": {
             "type": "string"
           },
+          "last_resale_star_count": {
+            "type": "integer"
+          },
           "owned_gift_id": {
             "type": "string"
           },
           "transfer_star_count": {
+            "type": "integer"
+          },
+          "next_transfer_date": {
             "type": "integer"
           }
         },
@@ -4014,6 +4210,9 @@
             "default": true
           },
           "transfer_star_count": {
+            "type": "integer"
+          },
+          "next_transfer_date": {
             "type": "integer"
           }
         },
@@ -13610,6 +13809,172 @@
         }
       }
     },
+    "/sendChecklist": {
+      "description": "Use this method to send a checklist on behalf of a connected business account. On success, the sent Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/sendDice": {
       "description": "Use this method to send an animated emoji that will display a random value. On success, the sent Message is returned.",
       "post": {
@@ -22775,6 +23140,148 @@
         }
       }
     },
+    "/editMessageChecklist": {
+      "description": "Use this method to edit a checklist on behalf of a connected business account. On success, the edited Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/editMessageReplyMarkup": {
       "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
@@ -29705,6 +30212,78 @@
                       "properties": {
                         "result": {
                           "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/getMyStarBalance": {
+      "description": "A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a StarAmount object.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/StarAmount"
                         }
                       }
                     }
