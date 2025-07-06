@@ -1,9 +1,9 @@
 {
   "telegram-bot-api": {
-    "schema_version": "9.1.0+20250704014839",
+    "schema_version": "9.1.0+20250706015655",
     "source_version": "9.1.0",
-    "source_hash": "103570035",
-    "updated_at": "2025-07-04T01:48:39Z"
+    "source_hash": "4096239515",
+    "updated_at": "2025-07-06T01:56:55Z"
   },
   "shikimori-graphql-api": {
     "schema_version": "1.0.0+20250527211609",
