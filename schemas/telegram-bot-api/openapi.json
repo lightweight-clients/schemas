@@ -1817,8 +1817,7 @@
             "type": "boolean"
           },
           "others_can_mark_tasks_as_done": {
-            "type": "boolean",
-            "default": true
+            "type": "boolean"
           }
         },
         "type": "object"
