@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.1.0"
+    "version": "9.2.0"
   },
   "servers": [
     {
@@ -363,6 +363,10 @@
           "is_forum": {
             "type": "boolean",
             "default": true
+          },
+          "is_direct_messages": {
+            "type": "boolean",
+            "default": true
           }
         },
         "type": "object"
@@ -399,6 +403,10 @@
             "type": "boolean",
             "default": true
           },
+          "is_direct_messages": {
+            "type": "boolean",
+            "default": true
+          },
           "accent_color_id": {
             "type": "integer"
           },
@@ -427,6 +435,9 @@
             "$ref": "#/components/schemas/BusinessOpeningHours"
           },
           "personal_chat": {
+            "$ref": "#/components/schemas/Chat"
+          },
+          "parent_chat": {
             "$ref": "#/components/schemas/Chat"
           },
           "available_reactions": {
@@ -546,6 +557,9 @@
           "message_thread_id": {
             "type": "integer"
           },
+          "direct_messages_topic": {
+            "$ref": "#/components/schemas/DirectMessagesTopic"
+          },
           "from": {
             "$ref": "#/components/schemas/User"
           },
@@ -590,6 +604,9 @@
           "reply_to_story": {
             "$ref": "#/components/schemas/Story"
           },
+          "reply_to_checklist_task_id": {
+            "type": "integer"
+          },
           "via_bot": {
             "$ref": "#/components/schemas/User"
           },
@@ -601,6 +618,10 @@
             "default": true
           },
           "is_from_offline": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_paid_post": {
             "type": "boolean",
             "default": true
           },
@@ -624,6 +645,9 @@
           },
           "link_preview_options": {
             "$ref": "#/components/schemas/LinkPreviewOptions"
+          },
+          "suggested_post_info": {
+            "$ref": "#/components/schemas/SuggestedPostInfo"
           },
           "effect_id": {
             "type": "string"
@@ -825,6 +849,21 @@
           },
           "paid_message_price_changed": {
             "$ref": "#/components/schemas/PaidMessagePriceChanged"
+          },
+          "suggested_post_approved": {
+            "$ref": "#/components/schemas/SuggestedPostApproved"
+          },
+          "suggested_post_approval_failed": {
+            "$ref": "#/components/schemas/SuggestedPostApprovalFailed"
+          },
+          "suggested_post_declined": {
+            "$ref": "#/components/schemas/SuggestedPostDeclined"
+          },
+          "suggested_post_paid": {
+            "$ref": "#/components/schemas/SuggestedPostPaid"
+          },
+          "suggested_post_refunded": {
+            "$ref": "#/components/schemas/SuggestedPostRefunded"
           },
           "video_chat_scheduled": {
             "$ref": "#/components/schemas/VideoChatScheduled"
@@ -1071,6 +1110,9 @@
             }
           },
           "quote_position": {
+            "type": "integer"
+          },
+          "checklist_task_id": {
             "type": "integer"
           }
         },
@@ -2385,6 +2427,87 @@
         },
         "type": "object"
       },
+      "SuggestedPostApproved": {
+        "description": "Describes a service message about the approval of a suggested post.",
+        "properties": {
+          "suggested_post_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "price": {
+            "$ref": "#/components/schemas/SuggestedPostPrice"
+          },
+          "send_date": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "send_date"
+        ],
+        "type": "object"
+      },
+      "SuggestedPostApprovalFailed": {
+        "description": "Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.",
+        "properties": {
+          "suggested_post_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "price": {
+            "$ref": "#/components/schemas/SuggestedPostPrice"
+          }
+        },
+        "required": [
+          "price"
+        ],
+        "type": "object"
+      },
+      "SuggestedPostDeclined": {
+        "description": "Describes a service message about the rejection of a suggested post.",
+        "properties": {
+          "suggested_post_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SuggestedPostPaid": {
+        "description": "Describes a service message about a successful payment for a suggested post.",
+        "properties": {
+          "suggested_post_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer"
+          },
+          "star_amount": {
+            "$ref": "#/components/schemas/StarAmount"
+          }
+        },
+        "required": [
+          "currency"
+        ],
+        "type": "object"
+      },
+      "SuggestedPostRefunded": {
+        "description": "Describes a service message about a payment refund for a suggested post.",
+        "properties": {
+          "suggested_post_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reason"
+        ],
+        "type": "object"
+      },
       "GiveawayCreated": {
         "description": "This object represents a service message about the creation of a scheduled giveaway.",
         "properties": {
@@ -2533,6 +2656,67 @@
           },
           "show_above_text": {
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "SuggestedPostPrice": {
+        "description": "Desribes price of a suggested post.",
+        "required": [
+          "currency",
+          "amount"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "SuggestedPostInfo": {
+        "description": "Contains information about a suggested post.",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string"
+          },
+          "price": {
+            "$ref": "#/components/schemas/SuggestedPostPrice"
+          },
+          "send_date": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "SuggestedPostParameters": {
+        "description": "Contains parameters of a post that is being suggested by the bot.",
+        "properties": {
+          "price": {
+            "$ref": "#/components/schemas/SuggestedPostPrice"
+          },
+          "send_date": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "DirectMessagesTopic": {
+        "description": "Describes a topic of a direct messages chat.",
+        "required": [
+          "topic_id"
+        ],
+        "properties": {
+          "topic_id": {
+            "type": "integer"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
           }
         },
         "type": "object"
@@ -3050,6 +3234,9 @@
           },
           "can_manage_topics": {
             "type": "boolean"
+          },
+          "can_manage_direct_messages": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3208,6 +3395,9 @@
             "type": "boolean"
           },
           "can_manage_topics": {
+            "type": "boolean"
+          },
+          "can_manage_direct_messages": {
             "type": "boolean"
           },
           "custom_title": {
@@ -3908,6 +4098,9 @@
           },
           "remaining_count": {
             "type": "integer"
+          },
+          "publisher_chat": {
+            "$ref": "#/components/schemas/Chat"
           }
         },
         "type": "object"
@@ -4039,6 +4232,9 @@
           },
           "backdrop": {
             "$ref": "#/components/schemas/UniqueGiftBackdrop"
+          },
+          "publisher_chat": {
+            "$ref": "#/components/schemas/Chat"
           }
         },
         "type": "object"
@@ -8407,6 +8603,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "text": {
                     "type": "string"
                   },
@@ -8433,6 +8632,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -8480,6 +8682,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "text": {
                     "type": "string"
                   },
@@ -8506,6 +8711,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -8553,6 +8761,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "text": {
                     "type": "string"
                   },
@@ -8579,6 +8790,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -8686,6 +8900,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -8704,6 +8921,9 @@
                   },
                   "protect_content": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "message_id": {
                     "type": "integer"
@@ -8733,6 +8953,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -8751,6 +8974,9 @@
                   },
                   "protect_content": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "message_id": {
                     "type": "integer"
@@ -8780,6 +9006,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -8798,6 +9027,9 @@
                   },
                   "protect_content": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "message_id": {
                     "type": "integer"
@@ -8885,6 +9117,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -8932,6 +9167,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -8977,6 +9215,9 @@
                     ]
                   },
                   "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
                     "type": "integer"
                   },
                   "from_chat_id": {
@@ -9087,6 +9328,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -9126,6 +9370,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9171,6 +9418,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -9210,6 +9460,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9255,6 +9508,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -9294,6 +9550,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9397,6 +9656,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -9447,6 +9709,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "from_chat_id": {
                     "anyOf": [
                       {
@@ -9495,6 +9760,9 @@
                     ]
                   },
                   "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
                     "type": "integer"
                   },
                   "from_chat_id": {
@@ -9606,6 +9874,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "photo": {
                     "anyOf": [
                       {
@@ -9645,6 +9916,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9692,6 +9966,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "photo": {
                     "anyOf": [
                       {
@@ -9731,6 +10008,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9778,6 +10058,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "photo": {
                     "anyOf": [
                       {
@@ -9817,6 +10100,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -9922,6 +10208,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "audio": {
                     "anyOf": [
                       {
@@ -9974,6 +10263,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10021,6 +10313,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "audio": {
                     "anyOf": [
                       {
@@ -10073,6 +10368,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10120,6 +10418,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "audio": {
                     "anyOf": [
                       {
@@ -10172,6 +10473,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10277,6 +10581,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "document": {
                     "anyOf": [
                       {
@@ -10323,6 +10630,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10370,97 +10680,7 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
-                  "document": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/components/schemas/InputFile"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "thumbnail": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/components/schemas/InputFile"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "caption": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "caption_entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "disable_content_type_detection": {
-                    "type": "boolean"
-                  },
-                  "disable_notification": {
-                    "type": "boolean"
-                  },
-                  "protect_content": {
-                    "type": "boolean"
-                  },
-                  "allow_paid_broadcast": {
-                    "type": "boolean"
-                  },
-                  "message_effect_id": {
-                    "type": "string"
-                  },
-                  "reply_parameters": {
-                    "$ref": "#/components/schemas/ReplyParameters"
-                  },
-                  "reply_markup": {
-                    "anyOf": [
-                      {
-                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                      },
-                      {
-                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
-                      },
-                      {
-                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
-                      },
-                      {
-                        "$ref": "#/components/schemas/ForceReply"
-                      }
-                    ]
-                  }
-                },
-                "required": [
-                  "chat_id",
-                  "document"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_thread_id": {
+                  "direct_messages_topic_id": {
                     "type": "integer"
                   },
                   "document": {
@@ -10509,6 +10729,108 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "document"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "document": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "thumbnail": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "disable_content_type_detection": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10614,6 +10936,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video": {
                     "anyOf": [
                       {
@@ -10688,6 +11013,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10735,6 +11063,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video": {
                     "anyOf": [
                       {
@@ -10809,6 +11140,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -10856,6 +11190,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video": {
                     "anyOf": [
                       {
@@ -10930,6 +11267,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11035,6 +11375,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "animation": {
                     "anyOf": [
                       {
@@ -11093,6 +11436,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11140,6 +11486,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "animation": {
                     "anyOf": [
                       {
@@ -11198,6 +11547,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11245,6 +11597,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "animation": {
                     "anyOf": [
                       {
@@ -11303,6 +11658,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11408,6 +11766,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "voice": {
                     "anyOf": [
                       {
@@ -11444,6 +11805,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11491,6 +11855,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "voice": {
                     "anyOf": [
                       {
@@ -11527,6 +11894,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11574,6 +11944,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "voice": {
                     "anyOf": [
                       {
@@ -11610,6 +11983,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11715,6 +12091,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video_note": {
                     "anyOf": [
                       {
@@ -11752,6 +12131,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11799,6 +12181,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video_note": {
                     "anyOf": [
                       {
@@ -11836,6 +12221,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -11883,6 +12271,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "video_note": {
                     "anyOf": [
                       {
@@ -11920,6 +12311,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12022,6 +12416,12 @@
                       }
                     ]
                   },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "star_count": {
                     "type": "integer"
                   },
@@ -12057,6 +12457,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12102,6 +12505,12 @@
                       }
                     ]
                   },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "star_count": {
                     "type": "integer"
                   },
@@ -12137,6 +12546,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12182,6 +12594,12 @@
                       }
                     ]
                   },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "star_count": {
                     "type": "integer"
                   },
@@ -12217,6 +12635,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12323,6 +12744,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "media": {
                     "type": "array",
                     "items": {
@@ -12384,6 +12808,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "media": {
                     "type": "array",
                     "items": {
@@ -12443,6 +12870,9 @@
                     ]
                   },
                   "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
                     "type": "integer"
                   },
                   "media": {
@@ -12567,6 +12997,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -12596,6 +13029,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12644,6 +13080,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -12673,6 +13112,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12721,6 +13163,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -12750,6 +13195,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12856,6 +13304,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -12891,6 +13342,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -12941,6 +13395,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -12976,6 +13433,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -13026,6 +13486,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -13061,6 +13524,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -13169,6 +13635,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "phone_number": {
                     "type": "string"
                   },
@@ -13192,6 +13661,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -13240,6 +13712,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "phone_number": {
                     "type": "string"
                   },
@@ -13263,6 +13738,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -13311,6 +13789,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "phone_number": {
                     "type": "string"
                   },
@@ -13334,6 +13815,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -14000,6 +14484,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "emoji": {
                     "type": "string",
                     "default": "🎲"
@@ -14015,6 +14502,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -14061,6 +14551,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "emoji": {
                     "type": "string",
                     "default": "🎲"
@@ -14076,6 +14569,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -14122,6 +14618,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "emoji": {
                     "type": "string",
                     "default": "🎲"
@@ -14137,6 +14636,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -15368,6 +15870,9 @@
                   },
                   "can_manage_topics": {
                     "type": "boolean"
+                  },
+                  "can_manage_direct_messages": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -15437,6 +15942,9 @@
                   },
                   "can_manage_topics": {
                     "type": "boolean"
+                  },
+                  "can_manage_direct_messages": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -15505,6 +16013,9 @@
                     "type": "boolean"
                   },
                   "can_manage_topics": {
+                    "type": "boolean"
+                  },
+                  "can_manage_direct_messages": {
                     "type": "boolean"
                   }
                 }
@@ -17727,7 +18238,7 @@
       }
     },
     "/pinChatMessage": {
-      "description": "Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns True on success.",
+      "description": "Use this method to add a message to the list of pinned messages in a chat. In private chats and channel direct messages chats, all non-service messages can be pinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to pin messages in groups and channels respectively. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -17875,7 +18386,7 @@
       }
     },
     "/unpinChatMessage": {
-      "description": "Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns True on success.",
+      "description": "Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -18011,7 +18522,7 @@
       }
     },
     "/unpinAllChatMessages": {
-      "description": "Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns True on success.",
+      "description": "Use this method to clear the list of pinned messages in a chat. In private chats and channel direct messages chats, no additional rights are required to unpin all pinned messages. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin all pinned messages in groups and channels respectively. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -22198,1657 +22709,6 @@
         }
       }
     },
-    "/editMessageText": {
-      "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "text": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "link_preview_options": {
-                    "$ref": "#/components/schemas/LinkPreviewOptions"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "text"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "text": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "link_preview_options": {
-                    "$ref": "#/components/schemas/LinkPreviewOptions"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "text"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "text": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "link_preview_options": {
-                    "$ref": "#/components/schemas/LinkPreviewOptions"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "text"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/editMessageCaption": {
-      "description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "caption": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "caption_entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "show_caption_above_media": {
-                    "type": "boolean"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "caption": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "caption_entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "show_caption_above_media": {
-                    "type": "boolean"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "caption": {
-                    "type": "string"
-                  },
-                  "parse_mode": {
-                    "type": "string"
-                  },
-                  "caption_entities": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/MessageEntity"
-                    }
-                  },
-                  "show_caption_above_media": {
-                    "type": "boolean"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/editMessageMedia": {
-      "description": "Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "media": {
-                    "$ref": "#/components/schemas/InputMedia"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "media"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "media": {
-                    "$ref": "#/components/schemas/InputMedia"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "media"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "media": {
-                    "$ref": "#/components/schemas/InputMedia"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "media"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/editMessageLiveLocation": {
-      "description": "Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "latitude": {
-                    "type": "number"
-                  },
-                  "longitude": {
-                    "type": "number"
-                  },
-                  "live_period": {
-                    "type": "integer"
-                  },
-                  "horizontal_accuracy": {
-                    "type": "number"
-                  },
-                  "heading": {
-                    "type": "integer"
-                  },
-                  "proximity_alert_radius": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "latitude",
-                  "longitude"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "latitude": {
-                    "type": "number"
-                  },
-                  "longitude": {
-                    "type": "number"
-                  },
-                  "live_period": {
-                    "type": "integer"
-                  },
-                  "horizontal_accuracy": {
-                    "type": "number"
-                  },
-                  "heading": {
-                    "type": "integer"
-                  },
-                  "proximity_alert_radius": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "latitude",
-                  "longitude"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "latitude": {
-                    "type": "number"
-                  },
-                  "longitude": {
-                    "type": "number"
-                  },
-                  "live_period": {
-                    "type": "integer"
-                  },
-                  "horizontal_accuracy": {
-                    "type": "number"
-                  },
-                  "heading": {
-                    "type": "integer"
-                  },
-                  "proximity_alert_radius": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "latitude",
-                  "longitude"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/stopMessageLiveLocation": {
-      "description": "Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.",
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/editMessageChecklist": {
-      "description": "Use this method to edit a checklist on behalf of a connected business account. On success, the edited Message is returned.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "business_connection_id",
-                  "chat_id",
-                  "message_id",
-                  "checklist"
-                ],
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "type": "integer"
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "checklist": {
-                    "$ref": "#/components/schemas/InputChecklist"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "business_connection_id",
-                  "chat_id",
-                  "message_id",
-                  "checklist"
-                ],
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "type": "integer"
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "checklist": {
-                    "$ref": "#/components/schemas/InputChecklist"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "business_connection_id",
-                  "chat_id",
-                  "message_id",
-                  "checklist"
-                ],
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "type": "integer"
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "checklist": {
-                    "$ref": "#/components/schemas/InputChecklist"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "$ref": "#/components/schemas/Message"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/editMessageReplyMarkup": {
-      "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-      "post": {
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "inline_message_id": {
-                    "type": "string"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "anyOf": [
-                            {
-                              "$ref": "#/components/schemas/Message"
-                            },
-                            {
-                              "type": "boolean"
-                            }
-                          ]
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/stopPoll": {
-      "description": "Use this method to stop a poll which was sent by the bot. On success, the stopped Poll is returned.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ]
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ]
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "business_connection_id": {
-                    "type": "string"
-                  },
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  },
-                  "reply_markup": {
-                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
-                  }
-                },
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "$ref": "#/components/schemas/Poll"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/deleteMessage": {
-      "description": "Use this method to delete a message, including service messages, with the following limitations:- A message can only be deleted if it was sent less than 48 hours ago.- Service messages about a supergroup, channel, or forum topic creation can't be deleted.- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.- Bots can delete outgoing messages in private chats, groups, and supergroups.- Bots can delete incoming messages in private chats.- Bots granted can_post_messages permissions can delete outgoing messages in channels.- If the bot is an administrator of a group, it can delete any message there.- If the bot has can_delete_messages permission in a supergroup or a channel, it can delete any message there.Returns True on success.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_id"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_id": {
-                    "type": "integer"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "type": "boolean"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/deleteMessages": {
-      "description": "Use this method to delete multiple messages simultaneously. If some of the specified messages can't be found, they are skipped. Returns True on success.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_ids"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_ids"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "chat_id",
-                  "message_ids"
-                ],
-                "properties": {
-                  "chat_id": {
-                    "anyOf": [
-                      {
-                        "type": "integer"
-                      },
-                      {
-                        "type": "string"
-                      }
-                    ]
-                  },
-                  "message_ids": {
-                    "type": "array",
-                    "items": {
-                      "type": "integer"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "type": "boolean"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
     "/getAvailableGifts": {
       "description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a Gifts object.",
       "post": {
@@ -26842,6 +25702,1893 @@
         }
       }
     },
+    "/editMessageText": {
+      "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editMessageCaption": {
+      "description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editMessageMedia": {
+      "description": "Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "media"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "media"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "media"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editMessageLiveLocation": {
+      "description": "Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "live_period": {
+                    "type": "integer"
+                  },
+                  "horizontal_accuracy": {
+                    "type": "number"
+                  },
+                  "heading": {
+                    "type": "integer"
+                  },
+                  "proximity_alert_radius": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "live_period": {
+                    "type": "integer"
+                  },
+                  "horizontal_accuracy": {
+                    "type": "number"
+                  },
+                  "heading": {
+                    "type": "integer"
+                  },
+                  "proximity_alert_radius": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "latitude": {
+                    "type": "number"
+                  },
+                  "longitude": {
+                    "type": "number"
+                  },
+                  "live_period": {
+                    "type": "integer"
+                  },
+                  "horizontal_accuracy": {
+                    "type": "number"
+                  },
+                  "heading": {
+                    "type": "integer"
+                  },
+                  "proximity_alert_radius": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "latitude",
+                  "longitude"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/stopMessageLiveLocation": {
+      "description": "Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editMessageChecklist": {
+      "description": "Use this method to edit a checklist on behalf of a connected business account. On success, the edited Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "chat_id",
+                  "message_id",
+                  "checklist"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "checklist": {
+                    "$ref": "#/components/schemas/InputChecklist"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editMessageReplyMarkup": {
+      "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "anyOf": [
+                            {
+                              "$ref": "#/components/schemas/Message"
+                            },
+                            {
+                              "type": "boolean"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/stopPoll": {
+      "description": "Use this method to stop a poll which was sent by the bot. On success, the stopped Poll is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Poll"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/approveSuggestedPost": {
+      "description": "Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "send_date": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "send_date": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "send_date": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/declineSuggestedPost": {
+      "description": "Use this method to decline a suggested post in a direct messages chat. The bot must have the 'can_manage_direct_messages' administrator right in the corresponding channel chat. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "comment": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/deleteMessage": {
+      "description": "Use this method to delete a message, including service messages, with the following limitations:- A message can only be deleted if it was sent less than 48 hours ago.- Service messages about a supergroup, channel, or forum topic creation can't be deleted.- A dice message in a private chat can only be deleted if it was sent more than 24 hours ago.- Bots can delete outgoing messages in private chats, groups, and supergroups.- Bots can delete incoming messages in private chats.- Bots granted can_post_messages permissions can delete outgoing messages in channels.- If the bot is an administrator of a group, it can delete any message there.- If the bot has can_delete_messages administrator right in a supergroup or a channel, it can delete any message there.- If the bot has can_manage_direct_messages administrator right in a channel, it can delete any message in the corresponding direct messages chat.Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/deleteMessages": {
+      "description": "Use this method to delete multiple messages simultaneously. If some of the specified messages can't be found, they are skipped. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_ids"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_ids"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_ids"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/sendSticker": {
       "description": "Use this method to send static .WEBP, animated .TGS, or video .WEBM stickers. On success, the sent Message is returned.",
       "post": {
@@ -26868,6 +27615,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "sticker": {
                     "anyOf": [
                       {
@@ -26892,6 +27642,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -26939,6 +27692,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "sticker": {
                     "anyOf": [
                       {
@@ -26963,6 +27719,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -27010,6 +27769,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "sticker": {
                     "anyOf": [
                       {
@@ -27034,6 +27796,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -29304,6 +30069,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "title": {
                     "type": "string"
                   },
@@ -29384,6 +30152,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -29419,6 +30190,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "title": {
                     "type": "string"
                   },
@@ -29499,6 +30273,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
@@ -29534,6 +30311,9 @@
                   "message_thread_id": {
                     "type": "integer"
                   },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
                   "title": {
                     "type": "string"
                   },
@@ -29614,6 +30394,9 @@
                   },
                   "message_effect_id": {
                     "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
                   "reply_parameters": {
                     "$ref": "#/components/schemas/ReplyParameters"
