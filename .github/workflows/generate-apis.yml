@@ -172,6 +172,7 @@ jobs:
           body: "This PR updates the client to version ${{ steps.parse-version.outputs.api_version }} for the API ${{ matrix.api_name }}."
           branch: "new_version/${{ matrix.api_name }}_${{ steps.parse-version.outputs.api_version }}"
           base: master
+          assignees: HRAshton
           add-paths: |
             schemas.json
             schemas/
