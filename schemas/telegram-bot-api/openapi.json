@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.2.0"
+    "version": "9.3.0"
   },
   "servers": [
     {
@@ -331,6 +331,9 @@
           },
           "has_main_web_app": {
             "type": "boolean"
+          },
+          "has_topics_enabled": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -539,6 +542,15 @@
           },
           "location": {
             "$ref": "#/components/schemas/ChatLocation"
+          },
+          "rating": {
+            "$ref": "#/components/schemas/UserRating"
+          },
+          "unique_gift_colors": {
+            "$ref": "#/components/schemas/UniqueGiftColors"
+          },
+          "paid_message_star_count": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -789,6 +801,9 @@
           },
           "unique_gift": {
             "$ref": "#/components/schemas/UniqueGiftInfo"
+          },
+          "gift_upgrade_sent": {
+            "$ref": "#/components/schemas/GiftInfo"
           },
           "connected_website": {
             "type": "string"
@@ -1766,6 +1781,9 @@
           "completed_by_user": {
             "$ref": "#/components/schemas/User"
           },
+          "completed_by_chat": {
+            "$ref": "#/components/schemas/Chat"
+          },
           "completion_date": {
             "type": "integer"
           }
@@ -2236,6 +2254,10 @@
           },
           "icon_custom_emoji_id": {
             "type": "string"
+          },
+          "is_name_implicit": {
+            "type": "boolean",
+            "default": true
           }
         },
         "type": "object"
@@ -3703,6 +3725,29 @@
         },
         "type": "object"
       },
+      "UserRating": {
+        "description": "This object describes the rating of a user based on their Telegram Star spendings.",
+        "required": [
+          "level",
+          "rating",
+          "current_level_rating"
+        ],
+        "properties": {
+          "level": {
+            "type": "integer"
+          },
+          "rating": {
+            "type": "integer"
+          },
+          "current_level_rating": {
+            "type": "integer"
+          },
+          "next_level_rating": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "StoryAreaPosition": {
         "description": "Describes the position of a clickable area within a story.",
         "required": [
@@ -4069,6 +4114,30 @@
           },
           "icon_custom_emoji_id": {
             "type": "string"
+          },
+          "is_name_implicit": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "type": "object"
+      },
+      "GiftBackground": {
+        "description": "This object describes the background of a gift.",
+        "required": [
+          "center_color",
+          "edge_color",
+          "text_color"
+        ],
+        "properties": {
+          "center_color": {
+            "type": "integer"
+          },
+          "edge_color": {
+            "type": "integer"
+          },
+          "text_color": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -4093,10 +4162,30 @@
           "upgrade_star_count": {
             "type": "integer"
           },
+          "is_premium": {
+            "type": "boolean",
+            "default": true
+          },
+          "has_colors": {
+            "type": "boolean",
+            "default": true
+          },
           "total_count": {
             "type": "integer"
           },
           "remaining_count": {
+            "type": "integer"
+          },
+          "personal_total_count": {
+            "type": "integer"
+          },
+          "personal_remaining_count": {
+            "type": "integer"
+          },
+          "background": {
+            "$ref": "#/components/schemas/GiftBackground"
+          },
+          "unique_gift_variant_count": {
             "type": "integer"
           },
           "publisher_chat": {
@@ -4204,9 +4293,48 @@
         },
         "type": "object"
       },
+      "UniqueGiftColors": {
+        "description": "This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.",
+        "required": [
+          "model_custom_emoji_id",
+          "symbol_custom_emoji_id",
+          "light_theme_main_color",
+          "light_theme_other_colors",
+          "dark_theme_main_color",
+          "dark_theme_other_colors"
+        ],
+        "properties": {
+          "model_custom_emoji_id": {
+            "type": "string"
+          },
+          "symbol_custom_emoji_id": {
+            "type": "string"
+          },
+          "light_theme_main_color": {
+            "type": "integer"
+          },
+          "light_theme_other_colors": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "dark_theme_main_color": {
+            "type": "integer"
+          },
+          "dark_theme_other_colors": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "type": "object"
+      },
       "UniqueGift": {
         "description": "This object describes a unique gift that was upgraded from a regular gift.",
         "required": [
+          "gift_id",
           "base_name",
           "name",
           "number",
@@ -4215,6 +4343,9 @@
           "backdrop"
         ],
         "properties": {
+          "gift_id": {
+            "type": "string"
+          },
           "base_name": {
             "type": "string"
           },
@@ -4232,6 +4363,17 @@
           },
           "backdrop": {
             "$ref": "#/components/schemas/UniqueGiftBackdrop"
+          },
+          "is_premium": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_from_blockchain": {
+            "type": "boolean",
+            "default": true
+          },
+          "colors": {
+            "$ref": "#/components/schemas/UniqueGiftColors"
           },
           "publisher_chat": {
             "$ref": "#/components/schemas/Chat"
@@ -4257,6 +4399,10 @@
           "prepaid_upgrade_star_count": {
             "type": "integer"
           },
+          "is_upgrade_separate": {
+            "type": "boolean",
+            "default": true
+          },
           "can_be_upgraded": {
             "type": "boolean",
             "default": true
@@ -4273,6 +4419,9 @@
           "is_private": {
             "type": "boolean",
             "default": true
+          },
+          "unique_gift_number": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -4290,7 +4439,10 @@
           "origin": {
             "type": "string"
           },
-          "last_resale_star_count": {
+          "last_resale_currency": {
+            "type": "string"
+          },
+          "last_resale_amount": {
             "type": "integer"
           },
           "owned_gift_id": {
@@ -4369,6 +4521,13 @@
           },
           "prepaid_upgrade_star_count": {
             "type": "integer"
+          },
+          "is_upgrade_separate": {
+            "type": "boolean",
+            "default": true
+          },
+          "unique_gift_number": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -4441,7 +4600,8 @@
           "unlimited_gifts",
           "limited_gifts",
           "unique_gifts",
-          "premium_subscription"
+          "premium_subscription",
+          "gifts_from_channels"
         ],
         "properties": {
           "unlimited_gifts": {
@@ -4454,6 +4614,9 @@
             "type": "boolean"
           },
           "premium_subscription": {
+            "type": "boolean"
+          },
+          "gifts_from_channels": {
             "type": "boolean"
           }
         },
@@ -8922,6 +9085,9 @@
                   "protect_content": {
                     "type": "boolean"
                   },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
@@ -8975,6 +9141,9 @@
                   "protect_content": {
                     "type": "boolean"
                   },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
@@ -9027,6 +9196,9 @@
                   },
                   "protect_content": {
                     "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
                   },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
@@ -9371,6 +9543,9 @@
                   "allow_paid_broadcast": {
                     "type": "boolean"
                   },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
@@ -9461,6 +9636,9 @@
                   "allow_paid_broadcast": {
                     "type": "boolean"
                   },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
                   },
@@ -9550,6 +9728,9 @@
                   },
                   "allow_paid_broadcast": {
                     "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
                   },
                   "suggested_post_parameters": {
                     "$ref": "#/components/schemas/SuggestedPostParameters"
@@ -14717,6 +14898,163 @@
         }
       }
     },
+    "/sendMessageDraft": {
+      "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/sendChatAction": {
       "description": "Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns True on success.\nWe only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.",
       "post": {
@@ -15839,7 +16177,8 @@
                     "type": "boolean"
                   },
                   "can_restrict_members": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                   },
                   "can_promote_members": {
                     "type": "boolean"
@@ -15911,7 +16250,8 @@
                     "type": "boolean"
                   },
                   "can_restrict_members": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                   },
                   "can_promote_members": {
                     "type": "boolean"
@@ -15983,7 +16323,8 @@
                     "type": "boolean"
                   },
                   "can_restrict_members": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "default": true
                   },
                   "can_promote_members": {
                     "type": "boolean"
@@ -19716,7 +20057,7 @@
       }
     },
     "/editForumTopic": {
-      "description": "Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic. Returns True on success.",
+      "description": "Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -20124,7 +20465,7 @@
       }
     },
     "/deleteForumTopic": {
-      "description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights. Returns True on success.",
+      "description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -20254,7 +20595,7 @@
       }
     },
     "/unpinAllForumTopicMessages": {
-      "description": "Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
+      "description": "Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -24712,10 +25053,16 @@
                   "exclude_unlimited": {
                     "type": "boolean"
                   },
-                  "exclude_limited": {
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
                     "type": "boolean"
                   },
                   "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
                     "type": "boolean"
                   },
                   "sort_by_price": {
@@ -24750,10 +25097,16 @@
                   "exclude_unlimited": {
                     "type": "boolean"
                   },
-                  "exclude_limited": {
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
                     "type": "boolean"
                   },
                   "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
                     "type": "boolean"
                   },
                   "sort_by_price": {
@@ -24788,7 +25141,396 @@
                   "exclude_unlimited": {
                     "type": "boolean"
                   },
-                  "exclude_limited": {
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/OwnedGifts"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/getUserGifts": {
+      "description": "Returns the gifts owned and hosted by a user. Returns OwnedGifts on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/OwnedGifts"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/getChatGifts": {
+      "description": "Returns the gifts owned by a chat. Returns OwnedGifts on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "exclude_unsaved": {
+                    "type": "boolean"
+                  },
+                  "exclude_saved": {
+                    "type": "boolean"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "exclude_unsaved": {
+                    "type": "boolean"
+                  },
+                  "exclude_saved": {
+                    "type": "boolean"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
+                    "type": "boolean"
+                  },
+                  "exclude_unique": {
+                    "type": "boolean"
+                  },
+                  "sort_by_price": {
+                    "type": "boolean"
+                  },
+                  "offset": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 100
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "exclude_unsaved": {
+                    "type": "boolean"
+                  },
+                  "exclude_saved": {
+                    "type": "boolean"
+                  },
+                  "exclude_unlimited": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_limited_non_upgradable": {
+                    "type": "boolean"
+                  },
+                  "exclude_from_blockchain": {
                     "type": "boolean"
                   },
                   "exclude_unique": {
@@ -25356,6 +26098,157 @@
                     "items": {
                       "$ref": "#/components/schemas/StoryArea"
                     }
+                  },
+                  "post_to_chat_page": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Story"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/repostStory": {
+      "description": "Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the can_manage_stories business bot right for both business accounts. Returns Story on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "from_chat_id",
+                  "from_story_id",
+                  "active_period"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "from_chat_id": {
+                    "type": "integer"
+                  },
+                  "from_story_id": {
+                    "type": "integer"
+                  },
+                  "active_period": {
+                    "type": "integer"
+                  },
+                  "post_to_chat_page": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "from_chat_id",
+                  "from_story_id",
+                  "active_period"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "from_chat_id": {
+                    "type": "integer"
+                  },
+                  "from_story_id": {
+                    "type": "integer"
+                  },
+                  "active_period": {
+                    "type": "integer"
+                  },
+                  "post_to_chat_page": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "from_chat_id",
+                  "from_story_id",
+                  "active_period"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "from_chat_id": {
+                    "type": "integer"
+                  },
+                  "from_story_id": {
+                    "type": "integer"
+                  },
+                  "active_period": {
+                    "type": "integer"
                   },
                   "post_to_chat_page": {
                     "type": "boolean"
