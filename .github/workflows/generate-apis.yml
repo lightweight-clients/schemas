@@ -113,6 +113,18 @@ jobs:
             mv schemas/${{ matrix.api_name }}/graphql.json.tmp schemas/${{ matrix.api_name }}/graphql.json
           fi
 
+      - name: Detect changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected after generation:"
+            git status
+            git diff
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes detected after generation."
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Parse version
         id: parse-version
         run: |
@@ -131,6 +143,7 @@ jobs:
           hashes: ${{ needs.compare-versions.outputs.hashes }}
           api_name: ${{ matrix.api_name }}
           api_version: ${{ steps.parse-version.outputs.api_version }}
+          has_changes: ${{ steps.detect-changes.outputs.has_changes }}
         run: |
           import datetime
           import json
@@ -140,6 +153,7 @@ jobs:
           hashes = os.environ['hashes']
           api_name = os.environ['api_name']
           api_version = os.environ['api_version']
+          has_changes = os.environ['has_changes']
 
           api_index = apis.split().index(api_name)
           api_hash = hashes.split()[api_index]
@@ -149,20 +163,18 @@ jobs:
           digits_date = timestamp.strftime("%Y%m%d%H%M%S")
 
           with open('schemas.json', 'r') as f:
-              data = json.load(f)
+            data = json.load(f)
 
-          data[api_name] = {
-            "schema_version": f"{api_version}+{digits_date}",
-            "source_version": api_version,
-            "source_hash": api_hash,
-            "updated_at": iso_date,
-          }
+          data[api_name]['source_hash'] = api_hash
+          print(f"Set source_hash for {api_name} to {api_hash}")
+          if has_changes == 'true':
+            print(f"Changes detected for {api_name}, updating version info")
+            data[api_name]['schema_version'] = f"{api_version}+{digits_date}"
+            data[api_name]['source_version'] = api_version
+            data[api_name]['updated_at'] = iso_date
 
           with open('schemas.json', 'w') as f:
-              json.dump(data, f, indent=2)
-
-      - name: Show updated schemas.json
-        run: cat schemas.json
+            json.dump(data, f, indent=2)
 
       - name: Create Pull Request with current (uncommitted) changes
         uses: peter-evans/create-pull-request@v7

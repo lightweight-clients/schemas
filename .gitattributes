@@ -1,0 +1,11 @@
+
+# Ensure all text files are normalized to LF in the repository
+* text=auto eol=lf
+
+# Explicit rules for common text file types
+*.sh    text eol=lf
+*.py    text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.json  text eol=lf
+*.md    text eol=lf
