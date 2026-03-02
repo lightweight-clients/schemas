@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.4.0"
+    "version": "9.5.0"
   },
   "servers": [
     {
@@ -590,6 +590,9 @@
           "sender_business_bot": {
             "$ref": "#/components/schemas/User"
           },
+          "sender_tag": {
+            "type": "string"
+          },
           "date": {
             "type": "integer"
           },
@@ -983,6 +986,12 @@
             "type": "string"
           },
           "custom_emoji_id": {
+            "type": "string"
+          },
+          "unix_time": {
+            "type": "integer"
+          },
+          "date_time_format": {
             "type": "string"
           }
         },
@@ -3339,6 +3348,9 @@
           },
           "can_manage_direct_messages": {
             "type": "boolean"
+          },
+          "can_manage_tags": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3502,6 +3514,9 @@
           "can_manage_direct_messages": {
             "type": "boolean"
           },
+          "can_manage_tags": {
+            "type": "boolean"
+          },
           "custom_title": {
             "type": "string"
           }
@@ -3516,6 +3531,9 @@
         ],
         "properties": {
           "status": {
+            "type": "string"
+          },
+          "tag": {
             "type": "string"
           },
           "user": {
@@ -3543,6 +3561,7 @@
           "can_send_polls",
           "can_send_other_messages",
           "can_add_web_page_previews",
+          "can_edit_tag",
           "can_change_info",
           "can_invite_users",
           "can_pin_messages",
@@ -3551,6 +3570,9 @@
         ],
         "properties": {
           "status": {
+            "type": "string"
+          },
+          "tag": {
             "type": "string"
           },
           "user": {
@@ -3587,6 +3609,9 @@
             "type": "boolean"
           },
           "can_add_web_page_previews": {
+            "type": "boolean"
+          },
+          "can_edit_tag": {
             "type": "boolean"
           },
           "can_change_info": {
@@ -3704,6 +3729,9 @@
             "type": "boolean"
           },
           "can_add_web_page_previews": {
+            "type": "boolean"
+          },
+          "can_edit_tag": {
             "type": "boolean"
           },
           "can_change_info": {
@@ -15007,7 +15035,7 @@
       }
     },
     "/sendMessageDraft": {
-      "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
+      "description": "Use this method to stream a partial message to a user while the message is being generated. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -16438,6 +16466,9 @@
                   },
                   "can_manage_direct_messages": {
                     "type": "boolean"
+                  },
+                  "can_manage_tags": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -16511,6 +16542,9 @@
                   },
                   "can_manage_direct_messages": {
                     "type": "boolean"
+                  },
+                  "can_manage_tags": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -16583,6 +16617,9 @@
                     "type": "boolean"
                   },
                   "can_manage_direct_messages": {
+                    "type": "boolean"
+                  },
+                  "can_manage_tags": {
                     "type": "boolean"
                   }
                 }
@@ -16725,6 +16762,145 @@
                     "type": "integer"
                   },
                   "custom_title": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/setChatMemberTag": {
+      "description": "Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the can_manage_tags administrator right. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "user_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "user_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "tag": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "user_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "tag": {
                     "type": "string"
                   }
                 }
