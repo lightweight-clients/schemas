@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.5.0"
+    "version": "9.6.0"
   },
   "servers": [
     {
@@ -238,6 +238,9 @@
           },
           "removed_chat_boost": {
             "$ref": "#/components/schemas/ChatBoostRemoved"
+          },
+          "managed_bot": {
+            "$ref": "#/components/schemas/ManagedBotUpdated"
           }
         },
         "type": "object"
@@ -336,6 +339,9 @@
             "type": "boolean"
           },
           "allows_users_to_create_topics": {
+            "type": "boolean"
+          },
+          "can_manage_bots": {
             "type": "boolean"
           }
         },
@@ -628,6 +634,9 @@
           "reply_to_checklist_task_id": {
             "type": "integer"
           },
+          "reply_to_poll_option_id": {
+            "type": "string"
+          },
           "via_bot": {
             "$ref": "#/components/schemas/User"
           },
@@ -877,8 +886,17 @@
           "giveaway_completed": {
             "$ref": "#/components/schemas/GiveawayCompleted"
           },
+          "managed_bot_created": {
+            "$ref": "#/components/schemas/ManagedBotCreated"
+          },
           "paid_message_price_changed": {
             "$ref": "#/components/schemas/PaidMessagePriceChanged"
+          },
+          "poll_option_added": {
+            "$ref": "#/components/schemas/PollOptionAdded"
+          },
+          "poll_option_deleted": {
+            "$ref": "#/components/schemas/PollOptionDeleted"
           },
           "suggested_post_approved": {
             "$ref": "#/components/schemas/SuggestedPostApproved"
@@ -1150,6 +1168,9 @@
           },
           "checklist_task_id": {
             "type": "integer"
+          },
+          "poll_option_id": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -1685,10 +1706,14 @@
       "PollOption": {
         "description": "This object contains information about one answer option in a poll.",
         "required": [
+          "persistent_id",
           "text",
           "voter_count"
         ],
         "properties": {
+          "persistent_id": {
+            "type": "string"
+          },
           "text": {
             "type": "string"
           },
@@ -1699,6 +1724,15 @@
             }
           },
           "voter_count": {
+            "type": "integer"
+          },
+          "added_by_user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "added_by_chat": {
+            "$ref": "#/components/schemas/Chat"
+          },
+          "addition_date": {
             "type": "integer"
           }
         },
@@ -1729,7 +1763,8 @@
         "description": "This object represents an answer of a user in a non-anonymous poll.",
         "required": [
           "poll_id",
-          "option_ids"
+          "option_ids",
+          "option_persistent_ids"
         ],
         "properties": {
           "poll_id": {
@@ -1746,6 +1781,12 @@
             "items": {
               "type": "integer"
             }
+          },
+          "option_persistent_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "type": "object"
@@ -1760,7 +1801,8 @@
           "is_closed",
           "is_anonymous",
           "type",
-          "allows_multiple_answers"
+          "allows_multiple_answers",
+          "allows_revoting"
         ],
         "properties": {
           "id": {
@@ -1796,8 +1838,14 @@
           "allows_multiple_answers": {
             "type": "boolean"
           },
-          "correct_option_id": {
-            "type": "integer"
+          "allows_revoting": {
+            "type": "boolean"
+          },
+          "correct_option_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
           },
           "explanation": {
             "type": "string"
@@ -1813,6 +1861,15 @@
           },
           "close_date": {
             "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "description_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
           }
         },
         "type": "object"
@@ -2085,6 +2142,84 @@
             "type": "integer"
           }
         },
+        "type": "object"
+      },
+      "ManagedBotCreated": {
+        "description": "This object contains information about the bot that was created to be managed by the current bot.",
+        "required": [
+          "bot"
+        ],
+        "properties": {
+          "bot": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "ManagedBotUpdated": {
+        "description": "This object contains information about the creation or token update of a bot that is managed by the current bot.",
+        "required": [
+          "user",
+          "bot"
+        ],
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "bot": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "PollOptionAdded": {
+        "description": "Describes a service message about an option added to a poll.",
+        "properties": {
+          "poll_message": {
+            "$ref": "#/components/schemas/MaybeInaccessibleMessage"
+          },
+          "option_persistent_id": {
+            "type": "string"
+          },
+          "option_text": {
+            "type": "string"
+          },
+          "option_text_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          }
+        },
+        "required": [
+          "option_persistent_id",
+          "option_text"
+        ],
+        "type": "object"
+      },
+      "PollOptionDeleted": {
+        "description": "Describes a service message about an option deleted from a poll.",
+        "properties": {
+          "poll_message": {
+            "$ref": "#/components/schemas/MaybeInaccessibleMessage"
+          },
+          "option_persistent_id": {
+            "type": "string"
+          },
+          "option_text": {
+            "type": "string"
+          },
+          "option_text_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          }
+        },
+        "required": [
+          "option_persistent_id",
+          "option_text"
+        ],
         "type": "object"
       },
       "ChatBoostAdded": {
@@ -2930,6 +3065,9 @@
           "request_chat": {
             "$ref": "#/components/schemas/KeyboardButtonRequestChat"
           },
+          "request_managed_bot": {
+            "$ref": "#/components/schemas/KeyboardButtonRequestManagedBot"
+          },
           "request_contact": {
             "type": "boolean"
           },
@@ -3015,6 +3153,24 @@
           },
           "request_photo": {
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "KeyboardButtonRequestManagedBot": {
+        "description": "This object defines the parameters for the creation of a managed bot. Information about the created bot will be shared with the bot using the update managed_bot and a Message with the field managed_bot_created.",
+        "required": [
+          "request_id"
+        ],
+        "properties": {
+          "request_id": {
+            "type": "integer"
+          },
+          "suggested_name": {
+            "type": "string"
+          },
+          "suggested_username": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -5307,6 +5463,43 @@
         },
         "type": "object"
       },
+      "SentWebAppMessage": {
+        "description": "Describes an inline message sent by a Web App on behalf of a user.",
+        "properties": {
+          "inline_message_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PreparedInlineMessage": {
+        "description": "Describes an inline message to be sent by a user of a Mini App.",
+        "required": [
+          "id",
+          "expiration_date"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "expiration_date": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PreparedKeyboardButton": {
+        "description": "Describes a keyboard button to be used by a user of a Mini App.",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "ResponseParameters": {
         "description": "Describes why a request was unsuccessful.",
         "properties": {
@@ -7189,31 +7382,6 @@
           },
           "query": {
             "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "SentWebAppMessage": {
-        "description": "Describes an inline message sent by a Web App on behalf of a user.",
-        "properties": {
-          "inline_message_id": {
-            "type": "string"
-          }
-        },
-        "type": "object"
-      },
-      "PreparedInlineMessage": {
-        "description": "Describes an inline message to be sent by a user of a Mini App.",
-        "required": [
-          "id",
-          "expiration_date"
-        ],
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "expiration_date": {
-            "type": "integer"
           }
         },
         "type": "object"
@@ -14270,8 +14438,23 @@
                   "allows_multiple_answers": {
                     "type": "boolean"
                   },
-                  "correct_option_id": {
-                    "type": "integer"
+                  "allows_revoting": {
+                    "type": "boolean"
+                  },
+                  "shuffle_options": {
+                    "type": "boolean"
+                  },
+                  "allow_adding_options": {
+                    "type": "boolean"
+                  },
+                  "hide_results_until_closes": {
+                    "type": "boolean"
+                  },
+                  "correct_option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
                   },
                   "explanation": {
                     "type": "string"
@@ -14293,6 +14476,18 @@
                   },
                   "is_closed": {
                     "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_parse_mode": {
+                    "type": "string"
+                  },
+                  "description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -14382,8 +14577,23 @@
                   "allows_multiple_answers": {
                     "type": "boolean"
                   },
-                  "correct_option_id": {
-                    "type": "integer"
+                  "allows_revoting": {
+                    "type": "boolean"
+                  },
+                  "shuffle_options": {
+                    "type": "boolean"
+                  },
+                  "allow_adding_options": {
+                    "type": "boolean"
+                  },
+                  "hide_results_until_closes": {
+                    "type": "boolean"
+                  },
+                  "correct_option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
                   },
                   "explanation": {
                     "type": "string"
@@ -14405,6 +14615,18 @@
                   },
                   "is_closed": {
                     "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_parse_mode": {
+                    "type": "string"
+                  },
+                  "description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -14494,8 +14716,23 @@
                   "allows_multiple_answers": {
                     "type": "boolean"
                   },
-                  "correct_option_id": {
-                    "type": "integer"
+                  "allows_revoting": {
+                    "type": "boolean"
+                  },
+                  "shuffle_options": {
+                    "type": "boolean"
+                  },
+                  "allow_adding_options": {
+                    "type": "boolean"
+                  },
+                  "hide_results_until_closes": {
+                    "type": "boolean"
+                  },
+                  "correct_option_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
                   },
                   "explanation": {
                     "type": "string"
@@ -14517,6 +14754,18 @@
                   },
                   "is_closed": {
                     "type": "boolean"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "description_parse_mode": {
+                    "type": "string"
+                  },
+                  "description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -22206,6 +22455,200 @@
         }
       }
     },
+    "/getManagedBotToken": {
+      "description": "Use this method to get the token of a managed bot. Returns the token as String on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/replaceManagedBotToken": {
+      "description": "Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as String on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/setMyCommands": {
       "description": "Use this method to change the list of the bot's commands. See this manual for more details about bot commands. Returns True on success.",
       "post": {
@@ -27166,6 +27609,369 @@
         }
       }
     },
+    "/answerWebAppQuery": {
+      "description": "Use this method to set the result of an interaction with a Web App and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a SentWebAppMessage object is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "web_app_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "web_app_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "web_app_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "web_app_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "web_app_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "web_app_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/SentWebAppMessage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/savePreparedInlineMessage": {
+      "description": "Stores a message that can be sent by a user of a Mini App. Returns a PreparedInlineMessage object.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "result"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  },
+                  "allow_user_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_bot_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_group_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_channel_chats": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "result"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  },
+                  "allow_user_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_bot_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_group_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_channel_chats": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "result"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  },
+                  "allow_user_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_bot_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_group_chats": {
+                    "type": "boolean"
+                  },
+                  "allow_channel_chats": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/PreparedInlineMessage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/savePreparedKeyboardButton": {
+      "description": "Stores a keyboard button that can be used by a user within a Mini App. Returns a PreparedKeyboardButton object.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "button"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "button": {
+                    "$ref": "#/components/schemas/KeyboardButton"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "button"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "button": {
+                    "$ref": "#/components/schemas/KeyboardButton"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "button"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "button": {
+                    "$ref": "#/components/schemas/KeyboardButton"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/PreparedKeyboardButton"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/editMessageText": {
       "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
@@ -31213,260 +32019,6 @@
                       "properties": {
                         "result": {
                           "type": "boolean"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/answerWebAppQuery": {
-      "description": "Use this method to set the result of an interaction with a Web App and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a SentWebAppMessage object is returned.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "web_app_query_id",
-                  "result"
-                ],
-                "properties": {
-                  "web_app_query_id": {
-                    "type": "string"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "web_app_query_id",
-                  "result"
-                ],
-                "properties": {
-                  "web_app_query_id": {
-                    "type": "string"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "web_app_query_id",
-                  "result"
-                ],
-                "properties": {
-                  "web_app_query_id": {
-                    "type": "string"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "$ref": "#/components/schemas/SentWebAppMessage"
-                        }
-                      }
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          },
-          "5XX": {
-            "$ref": "#/components/responses/ServerError"
-          },
-          "default": {
-            "$ref": "#/components/responses/UnknownError"
-          }
-        }
-      }
-    },
-    "/savePreparedInlineMessage": {
-      "description": "Stores a message that can be sent by a user of a Mini App. Returns a PreparedInlineMessage object.",
-      "post": {
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "user_id",
-                  "result"
-                ],
-                "properties": {
-                  "user_id": {
-                    "type": "integer"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  },
-                  "allow_user_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_bot_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_group_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_channel_chats": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "user_id",
-                  "result"
-                ],
-                "properties": {
-                  "user_id": {
-                    "type": "integer"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  },
-                  "allow_user_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_bot_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_group_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_channel_chats": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "user_id",
-                  "result"
-                ],
-                "properties": {
-                  "user_id": {
-                    "type": "integer"
-                  },
-                  "result": {
-                    "$ref": "#/components/schemas/InlineQueryResult"
-                  },
-                  "allow_user_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_bot_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_group_chats": {
-                    "type": "boolean"
-                  },
-                  "allow_channel_chats": {
-                    "type": "boolean"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Request was successful, the result is returned.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/Success"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "result": {
-                          "$ref": "#/components/schemas/PreparedInlineMessage"
                         }
                       }
                     }
