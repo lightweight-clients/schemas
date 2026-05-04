@@ -6,10 +6,10 @@
     "updated_at": "2026-04-07T01:09:38Z"
   },
   "shikimori-graphql-api": {
-    "schema_version": "1.0.0+20250527211609",
+    "schema_version": "1.0.0+20260504012610",
     "source_version": "1.0.0",
-    "source_hash": "160603312",
-    "updated_at": "2025-05-27T21:16:09Z"
+    "source_hash": "3515105045",
+    "updated_at": "2026-05-04T01:26:10Z"
   },
   "jikan-api": {
     "schema_version": "4.0.0+20250527210450",
