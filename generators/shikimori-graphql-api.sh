@@ -10,4 +10,4 @@ curl -s \
     -H "Content-Type: application/json" \
     -d "$query" \
     -o $output_dir/graphql.json \
-    https://shikimori.one/api/graphql
+    https://shikimori.io/api/graphql

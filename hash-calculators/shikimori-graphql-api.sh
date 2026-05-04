@@ -11,7 +11,7 @@ TypeRef on __Type{kind name ofType{kind name ofType{kind name ofType{kind name o
 name ofType{kind name ofType{kind name}}}}}}}}"}
 EOF
 
-http_content=$(curl -s -X POST -H "Content-Type: application/json" -d "$query" https://shikimori.one/api/graphql)
+http_content=$(curl -s -X POST -H "Content-Type: application/json" -d "$query" https://shikimori.io/api/graphql)
 crc32_hash=$(echo "$http_content" | cksum | awk '{print $1}')
 
 echo $crc32_hash
