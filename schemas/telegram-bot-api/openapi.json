@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "9.6.0"
+    "version": "10.0.0"
   },
   "servers": [
     {
@@ -162,7 +162,7 @@
         ]
       },
       "Update": {
-        "description": "This object represents an incoming update.At most one of the optional parameters can be present in any given update.",
+        "description": "This object represents an incoming update.At most one of the optional fields can be present in any given update.",
         "required": [
           "update_id"
         ],
@@ -193,6 +193,9 @@
           },
           "deleted_business_messages": {
             "$ref": "#/components/schemas/BusinessMessagesDeleted"
+          },
+          "guest_message": {
+            "$ref": "#/components/schemas/Message"
           },
           "message_reaction": {
             "$ref": "#/components/schemas/MessageReactionUpdated"
@@ -324,6 +327,9 @@
             "type": "boolean"
           },
           "can_read_all_group_messages": {
+            "type": "boolean"
+          },
+          "supports_guest_queries": {
             "type": "boolean"
           },
           "supports_inline_queries": {
@@ -602,6 +608,9 @@
           "date": {
             "type": "integer"
           },
+          "guest_query_id": {
+            "type": "string"
+          },
           "business_connection_id": {
             "type": "string"
           },
@@ -639,6 +648,12 @@
           },
           "via_bot": {
             "$ref": "#/components/schemas/User"
+          },
+          "guest_bot_caller_user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "guest_bot_caller_chat": {
+            "$ref": "#/components/schemas/Chat"
           },
           "edit_date": {
             "type": "integer"
@@ -690,6 +705,9 @@
           },
           "document": {
             "$ref": "#/components/schemas/Document"
+          },
+          "live_photo": {
+            "$ref": "#/components/schemas/LivePhoto"
           },
           "paid_media": {
             "$ref": "#/components/schemas/PaidMediaInfo"
@@ -1068,6 +1086,9 @@
           "document": {
             "$ref": "#/components/schemas/Document"
           },
+          "live_photo": {
+            "$ref": "#/components/schemas/LivePhoto"
+          },
           "paid_media": {
             "$ref": "#/components/schemas/PaidMediaInfo"
           },
@@ -1415,6 +1436,46 @@
         },
         "type": "object"
       },
+      "LivePhoto": {
+        "description": "This object represents a live photo.",
+        "properties": {
+          "photo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSize"
+            }
+          },
+          "file_id": {
+            "type": "string"
+          },
+          "file_unique_id": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "duration": {
+            "type": "integer"
+          },
+          "mime_type": {
+            "type": "string"
+          },
+          "file_size": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "file_id",
+          "file_unique_id",
+          "width",
+          "height",
+          "duration"
+        ],
+        "type": "object"
+      },
       "Story": {
         "description": "This object represents a story.",
         "required": [
@@ -1596,33 +1657,31 @@
         "description": "This object describes paid media. Currently, it can be one of",
         "anyOf": [
           {
-            "$ref": "#/components/schemas/PaidMediaPreview"
+            "$ref": "#/components/schemas/PaidMediaLivePhoto"
           },
           {
             "$ref": "#/components/schemas/PaidMediaPhoto"
+          },
+          {
+            "$ref": "#/components/schemas/PaidMediaPreview"
           },
           {
             "$ref": "#/components/schemas/PaidMediaVideo"
           }
         ]
       },
-      "PaidMediaPreview": {
-        "description": "The paid media isn't available before the payment.",
+      "PaidMediaLivePhoto": {
+        "description": "The paid media is a live photo.",
         "required": [
-          "type"
+          "type",
+          "live_photo"
         ],
         "properties": {
           "type": {
             "type": "string"
           },
-          "width": {
-            "type": "integer"
-          },
-          "height": {
-            "type": "integer"
-          },
-          "duration": {
-            "type": "integer"
+          "live_photo": {
+            "$ref": "#/components/schemas/LivePhoto"
           }
         },
         "type": "object"
@@ -1642,6 +1701,27 @@
             "items": {
               "$ref": "#/components/schemas/PhotoSize"
             }
+          }
+        },
+        "type": "object"
+      },
+      "PaidMediaPreview": {
+        "description": "The paid media isn't available before the payment.",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "duration": {
+            "type": "integer"
           }
         },
         "type": "object"
@@ -1703,6 +1783,97 @@
         },
         "type": "object"
       },
+      "PollMedia": {
+        "description": "At most one of the optional fields can be present in any given object.",
+        "properties": {
+          "animation": {
+            "$ref": "#/components/schemas/Animation"
+          },
+          "audio": {
+            "$ref": "#/components/schemas/Audio"
+          },
+          "document": {
+            "$ref": "#/components/schemas/Document"
+          },
+          "live_photo": {
+            "$ref": "#/components/schemas/LivePhoto"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "photo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSize"
+            }
+          },
+          "sticker": {
+            "$ref": "#/components/schemas/Sticker"
+          },
+          "venue": {
+            "$ref": "#/components/schemas/Venue"
+          },
+          "video": {
+            "$ref": "#/components/schemas/Video"
+          }
+        },
+        "type": "object"
+      },
+      "InputPollMedia": {
+        "description": "This object represents the content of a poll description or a quiz explanation to be sent. It should be one of",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/InputMediaAnimation"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaAudio"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaDocument"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaLivePhoto"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaLocation"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaPhoto"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaVenue"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaVideo"
+          }
+        ]
+      },
+      "InputPollOptionMedia": {
+        "description": "This object represents the content of a poll option to be sent. It should be one of",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/InputMediaAnimation"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaLivePhoto"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaLocation"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaPhoto"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaSticker"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaVenue"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaVideo"
+          }
+        ]
+      },
       "PollOption": {
         "description": "This object contains information about one answer option in a poll.",
         "required": [
@@ -1722,6 +1893,9 @@
             "items": {
               "$ref": "#/components/schemas/MessageEntity"
             }
+          },
+          "media": {
+            "$ref": "#/components/schemas/PollMedia"
           },
           "voter_count": {
             "type": "integer"
@@ -1755,6 +1929,9 @@
             "items": {
               "$ref": "#/components/schemas/MessageEntity"
             }
+          },
+          "media": {
+            "$ref": "#/components/schemas/InputPollOptionMedia"
           }
         },
         "type": "object"
@@ -1802,7 +1979,8 @@
           "is_anonymous",
           "type",
           "allows_multiple_answers",
-          "allows_revoting"
+          "allows_revoting",
+          "members_only"
         ],
         "properties": {
           "id": {
@@ -1841,6 +2019,15 @@
           "allows_revoting": {
             "type": "boolean"
           },
+          "members_only": {
+            "type": "boolean"
+          },
+          "country_codes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "correct_option_ids": {
             "type": "array",
             "items": {
@@ -1856,6 +2043,9 @@
               "$ref": "#/components/schemas/MessageEntity"
             }
           },
+          "explanation_media": {
+            "$ref": "#/components/schemas/PollMedia"
+          },
           "open_period": {
             "type": "integer"
           },
@@ -1870,6 +2060,9 @@
             "items": {
               "$ref": "#/components/schemas/MessageEntity"
             }
+          },
+          "media": {
+            "$ref": "#/components/schemas/PollMedia"
           }
         },
         "type": "object"
@@ -3012,7 +3205,7 @@
         "type": "object"
       },
       "ReplyKeyboardMarkup": {
-        "description": "This object represents a custom keyboard with reply options (see Introduction to bots for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.",
+        "description": "This object represents a custom keyboard with reply options (see Introduction to bots for details and examples). Not supported in channels and for messages sent on behalf of a business account.",
         "required": [
           "keyboard"
         ],
@@ -3185,7 +3378,7 @@
         "type": "object"
       },
       "ReplyKeyboardRemove": {
-        "description": "Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup). Not supported in channels and for messages sent on behalf of a Telegram Business account.",
+        "description": "Upon receiving a message with this object, Telegram clients will remove the current custom keyboard and display the default letter-keyboard. By default, custom keyboards are displayed until a new keyboard is sent by a bot. An exception is made for one-time keyboards that are hidden immediately after the user presses a button (see ReplyKeyboardMarkup). Not supported in channels and for messages sent on behalf of a business account.",
         "required": [
           "remove_keyboard"
         ],
@@ -3353,7 +3546,7 @@
         "type": "object"
       },
       "ForceReply": {
-        "description": "Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode. Not supported in channels and for messages sent on behalf of a Telegram Business account.",
+        "description": "Upon receiving a message with this object, Telegram clients will display a reply interface to the user (act as if the user has selected the bot's message and tapped 'Reply'). This can be extremely useful if you want to create user-friendly step-by-step interfaces without having to sacrifice privacy mode. Not supported in channels and for messages sent on behalf of a user account.",
         "required": [
           "force_reply"
         ],
@@ -3717,6 +3910,7 @@
           "can_send_polls",
           "can_send_other_messages",
           "can_add_web_page_previews",
+          "can_react_to_messages",
           "can_edit_tag",
           "can_change_info",
           "can_invite_users",
@@ -3765,6 +3959,9 @@
             "type": "boolean"
           },
           "can_add_web_page_previews": {
+            "type": "boolean"
+          },
+          "can_react_to_messages": {
             "type": "boolean"
           },
           "can_edit_tag": {
@@ -3885,6 +4082,9 @@
             "type": "boolean"
           },
           "can_add_web_page_previews": {
+            "type": "boolean"
+          },
+          "can_react_to_messages": {
             "type": "boolean"
           },
           "can_edit_tag": {
@@ -4865,6 +5065,24 @@
         },
         "type": "object"
       },
+      "BotAccessSettings": {
+        "description": "This object describes the access settings of a bot.",
+        "required": [
+          "is_access_restricted"
+        ],
+        "properties": {
+          "is_access_restricted": {
+            "type": "boolean"
+          },
+          "added_users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/User"
+            }
+          }
+        },
+        "type": "object"
+      },
       "AcceptedGiftTypes": {
         "description": "This object describes the types of gifts that can be gifted to a user or a chat.",
         "required": [
@@ -5472,6 +5690,18 @@
         },
         "type": "object"
       },
+      "SentGuestMessage": {
+        "description": "Describes an inline message sent by a guest bot.",
+        "required": [
+          "inline_message_id"
+        ],
+        "properties": {
+          "inline_message_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "PreparedInlineMessage": {
         "description": "Describes an inline message to be sent by a user of a Mini App.",
         "required": [
@@ -5519,10 +5749,13 @@
             "$ref": "#/components/schemas/InputMediaAnimation"
           },
           {
+            "$ref": "#/components/schemas/InputMediaAudio"
+          },
+          {
             "$ref": "#/components/schemas/InputMediaDocument"
           },
           {
-            "$ref": "#/components/schemas/InputMediaAudio"
+            "$ref": "#/components/schemas/InputMediaLivePhoto"
           },
           {
             "$ref": "#/components/schemas/InputMediaPhoto"
@@ -5531,97 +5764,6 @@
             "$ref": "#/components/schemas/InputMediaVideo"
           }
         ]
-      },
-      "InputMediaPhoto": {
-        "description": "Represents a photo to be sent.",
-        "required": [
-          "type",
-          "media"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "default": "photo"
-          },
-          "media": {
-            "type": "string"
-          },
-          "caption": {
-            "type": "string"
-          },
-          "parse_mode": {
-            "type": "string"
-          },
-          "caption_entities": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MessageEntity"
-            }
-          },
-          "show_caption_above_media": {
-            "type": "boolean"
-          },
-          "has_spoiler": {
-            "type": "boolean"
-          }
-        },
-        "type": "object"
-      },
-      "InputMediaVideo": {
-        "description": "Represents a video to be sent.",
-        "required": [
-          "type",
-          "media"
-        ],
-        "properties": {
-          "type": {
-            "type": "string",
-            "default": "video"
-          },
-          "media": {
-            "type": "string"
-          },
-          "thumbnail": {
-            "type": "string"
-          },
-          "cover": {
-            "type": "string"
-          },
-          "start_timestamp": {
-            "type": "integer"
-          },
-          "caption": {
-            "type": "string"
-          },
-          "parse_mode": {
-            "type": "string"
-          },
-          "caption_entities": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MessageEntity"
-            }
-          },
-          "show_caption_above_media": {
-            "type": "boolean"
-          },
-          "width": {
-            "type": "integer"
-          },
-          "height": {
-            "type": "integer"
-          },
-          "duration": {
-            "type": "integer"
-          },
-          "supports_streaming": {
-            "type": "boolean"
-          },
-          "has_spoiler": {
-            "type": "boolean"
-          }
-        },
-        "type": "object"
       },
       "InputMediaAnimation": {
         "description": "Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.",
@@ -5746,6 +5888,221 @@
         },
         "type": "object"
       },
+      "InputMediaLivePhoto": {
+        "description": "Represents a live photo to be sent.",
+        "required": [
+          "type",
+          "media",
+          "photo"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "live_photo"
+          },
+          "media": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "show_caption_above_media": {
+            "type": "boolean"
+          },
+          "has_spoiler": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputMediaLocation": {
+        "description": "Represents a location to be sent.",
+        "required": [
+          "type",
+          "latitude",
+          "longitude"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "location"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "horizontal_accuracy": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "InputMediaPhoto": {
+        "description": "Represents a photo to be sent.",
+        "required": [
+          "type",
+          "media"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "photo"
+          },
+          "media": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "show_caption_above_media": {
+            "type": "boolean"
+          },
+          "has_spoiler": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputMediaSticker": {
+        "description": "Represents a sticker file to be sent.",
+        "required": [
+          "type",
+          "media"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "sticker"
+          },
+          "media": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputMediaVenue": {
+        "description": "Represents a venue to be sent.",
+        "required": [
+          "type",
+          "latitude",
+          "longitude",
+          "title",
+          "address"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "venue"
+          },
+          "latitude": {
+            "type": "number"
+          },
+          "longitude": {
+            "type": "number"
+          },
+          "title": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "foursquare_id": {
+            "type": "string"
+          },
+          "foursquare_type": {
+            "type": "string"
+          },
+          "google_place_id": {
+            "type": "string"
+          },
+          "google_place_type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputMediaVideo": {
+        "description": "Represents a video to be sent.",
+        "required": [
+          "type",
+          "media"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "video"
+          },
+          "media": {
+            "type": "string"
+          },
+          "thumbnail": {
+            "type": "string"
+          },
+          "cover": {
+            "type": "string"
+          },
+          "start_timestamp": {
+            "type": "integer"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "show_caption_above_media": {
+            "type": "boolean"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "duration": {
+            "type": "integer"
+          },
+          "supports_streaming": {
+            "type": "boolean"
+          },
+          "has_spoiler": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
       "InputFile": {
         "description": "This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.",
         "type": "object"
@@ -5754,12 +6111,36 @@
         "description": "This object describes the paid media to be sent. Currently, it can be one of",
         "anyOf": [
           {
+            "$ref": "#/components/schemas/InputPaidMediaLivePhoto"
+          },
+          {
             "$ref": "#/components/schemas/InputPaidMediaPhoto"
           },
           {
             "$ref": "#/components/schemas/InputPaidMediaVideo"
           }
         ]
+      },
+      "InputPaidMediaLivePhoto": {
+        "description": "The paid media to send is a live photo.",
+        "required": [
+          "type",
+          "media",
+          "photo"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "live_photo"
+          },
+          "media": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string"
+          }
+        },
+        "type": "object"
       },
       "InputPaidMediaPhoto": {
         "description": "The paid media to send is a photo.",
@@ -10667,6 +11048,373 @@
         }
       }
     },
+    "/sendLivePhoto": {
+      "description": "Use this method to send live photos. On success, the sent Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "live_photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "has_spoiler": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "live_photo",
+                  "photo"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "live_photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "has_spoiler": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "live_photo",
+                  "photo"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "live_photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "photo": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InputFile"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "has_spoiler": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "live_photo",
+                  "photo"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/sendAudio": {
       "description": "Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent Message is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.\nFor sending voice messages, use the sendVoice method instead.",
       "post": {
@@ -13204,7 +13952,7 @@
       }
     },
     "/sendMediaGroup": {
-      "description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.",
+      "description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -13241,6 +13989,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/InputMediaDocument"
+                        },
+                        {
+                          "$ref": "#/components/schemas/InputMediaLivePhoto"
                         },
                         {
                           "$ref": "#/components/schemas/InputMediaPhoto"
@@ -13307,6 +14058,9 @@
                           "$ref": "#/components/schemas/InputMediaDocument"
                         },
                         {
+                          "$ref": "#/components/schemas/InputMediaLivePhoto"
+                        },
+                        {
                           "$ref": "#/components/schemas/InputMediaPhoto"
                         },
                         {
@@ -13369,6 +14123,9 @@
                         },
                         {
                           "$ref": "#/components/schemas/InputMediaDocument"
+                        },
+                        {
+                          "$ref": "#/components/schemas/InputMediaLivePhoto"
                         },
                         {
                           "$ref": "#/components/schemas/InputMediaPhoto"
@@ -14450,6 +15207,15 @@
                   "hide_results_until_closes": {
                     "type": "boolean"
                   },
+                  "members_only": {
+                    "type": "boolean"
+                  },
+                  "country_codes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "correct_option_ids": {
                     "type": "array",
                     "items": {
@@ -14467,6 +15233,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "explanation_media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "open_period": {
                     "type": "integer"
@@ -14488,6 +15257,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -14589,6 +15361,15 @@
                   "hide_results_until_closes": {
                     "type": "boolean"
                   },
+                  "members_only": {
+                    "type": "boolean"
+                  },
+                  "country_codes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "correct_option_ids": {
                     "type": "array",
                     "items": {
@@ -14606,6 +15387,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "explanation_media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "open_period": {
                     "type": "integer"
@@ -14627,6 +15411,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -14728,6 +15515,15 @@
                   "hide_results_until_closes": {
                     "type": "boolean"
                   },
+                  "members_only": {
+                    "type": "boolean"
+                  },
+                  "country_codes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
                   "correct_option_ids": {
                     "type": "array",
                     "items": {
@@ -14745,6 +15541,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "explanation_media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "open_period": {
                     "type": "integer"
@@ -14766,6 +15565,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputPollMedia"
                   },
                   "disable_notification": {
                     "type": "boolean"
@@ -14877,7 +15679,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "checklist": {
                     "$ref": "#/components/schemas/InputChecklist"
@@ -14913,7 +15722,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "checklist": {
                     "$ref": "#/components/schemas/InputChecklist"
@@ -14949,7 +15765,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "checklist": {
                     "$ref": "#/components/schemas/InputChecklist"
@@ -15284,7 +16107,7 @@
       }
     },
     "/sendMessageDraft": {
-      "description": "Use this method to stream a partial message to a user while the message is being generated. Returns True on success.",
+      "description": "Use this method to stream a partial message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you must call sendMessage with the complete message to persist it in the user's chat. Returns True on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -15294,8 +16117,7 @@
                 "type": "object",
                 "required": [
                   "chat_id",
-                  "draft_id",
-                  "text"
+                  "draft_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -15327,8 +16149,7 @@
                 "type": "object",
                 "required": [
                   "chat_id",
-                  "draft_id",
-                  "text"
+                  "draft_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -15360,8 +16181,7 @@
                 "type": "object",
                 "required": [
                   "chat_id",
-                  "draft_id",
-                  "text"
+                  "draft_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -19868,7 +20688,7 @@
       }
     },
     "/getChatAdministrators": {
-      "description": "Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of ChatMember objects.",
+      "description": "Use this method to get a list of administrators in a chat. Returns an Array of ChatMember objects.",
       "post": {
         "requestBody": {
           "required": true,
@@ -19889,6 +20709,9 @@
                         "type": "string"
                       }
                     ]
+                  },
+                  "return_bots": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -19909,6 +20732,9 @@
                         "type": "string"
                       }
                     ]
+                  },
+                  "return_bots": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -19929,6 +20755,9 @@
                         "type": "string"
                       }
                     ]
+                  },
+                  "return_bots": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -20201,6 +21030,118 @@
                       "properties": {
                         "result": {
                           "$ref": "#/components/schemas/ChatMember"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/getUserPersonalChatMessages": {
+      "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of Message objects is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "limit"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "limit"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "limit"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "limit": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Message"
+                          }
                         }
                       }
                     }
@@ -22228,6 +23169,115 @@
         }
       }
     },
+    "/answerGuestQuery": {
+      "description": "Use this method to reply to a received guest message. On success, a SentGuestMessage object is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "guest_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "guest_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "guest_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "guest_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "guest_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "guest_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "$ref": "#/components/schemas/InlineQueryResult"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/SentGuestMessage"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/getUserChatBoosts": {
       "description": "Use this method to get the list of boosts added to a chat by a user. Requires administrator rights in the chat. Returns a UserChatBoosts object.",
       "post": {
@@ -22614,6 +23664,230 @@
                       "properties": {
                         "result": {
                           "type": "string"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/getManagedBotAccessSettings": {
+      "description": "Use this method to get the access settings of a managed bot. Returns a BotAccessSettings object on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/BotAccessSettings"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/setManagedBotAccessSettings": {
+      "description": "Use this method to change the access settings of a managed bot. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "is_access_restricted"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "is_access_restricted": {
+                    "type": "boolean"
+                  },
+                  "added_user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "is_access_restricted"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "is_access_restricted": {
+                    "type": "boolean"
+                  },
+                  "added_user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "user_id",
+                  "is_access_restricted"
+                ],
+                "properties": {
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "is_access_restricted": {
+                    "type": "boolean"
+                  },
+                  "added_user_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
                         }
                       }
                     }
@@ -28375,7 +29649,7 @@
       }
     },
     "/editMessageMedia": {
-      "description": "Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "description": "Use this method to edit animation, audio, document, live photo, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
         "requestBody": {
           "required": true,
@@ -28933,7 +30207,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_id": {
                     "type": "integer"
@@ -28961,7 +30242,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_id": {
                     "type": "integer"
@@ -28989,7 +30277,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_id": {
                     "type": "integer"
@@ -29803,6 +31098,290 @@
                     "items": {
                       "type": "integer"
                     }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/deleteMessageReaction": {
+      "description": "Use this method to remove a reaction from a message in a group or a supergroup chat. The bot must have the 'can_delete_messages' administrator right in the chat. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/deleteAllMessageReactions": {
+      "description": "Use this method to remove up to 10000 recent reactions in a group or a supergroup chat added by a given user or chat. The bot must have the 'can_delete_messages' administrator right in the chat. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "user_id": {
+                    "type": "integer"
+                  },
+                  "actor_chat_id": {
+                    "type": "integer"
                   }
                 }
               }
@@ -33578,7 +35157,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_thread_id": {
                     "type": "integer"
@@ -33619,7 +35205,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_thread_id": {
                     "type": "integer"
@@ -33660,7 +35253,14 @@
                     "type": "string"
                   },
                   "chat_id": {
-                    "type": "integer"
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
                   },
                   "message_thread_id": {
                     "type": "integer"
