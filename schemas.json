@@ -12,9 +12,9 @@
     "updated_at": "2025-05-27T21:16:09Z"
   },
   "jikan-api": {
-    "schema_version": "4.0.0+20250527210450",
+    "schema_version": "4.0.0+20260628221628",
     "source_version": "4.0.0",
-    "source_hash": "1443449147",
-    "updated_at": "2025-05-27T21:04:50Z"
+    "source_hash": "1171101645",
+    "updated_at": "2026-06-28T22:16:28Z"
   }
 }
