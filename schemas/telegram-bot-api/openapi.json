@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "10.0.0"
+    "version": "10.1.0"
   },
   "servers": [
     {
@@ -349,6 +349,9 @@
           },
           "can_manage_bots": {
             "type": "boolean"
+          },
+          "supports_join_request_queries": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -569,6 +572,9 @@
           },
           "paid_message_star_count": {
             "type": "integer"
+          },
+          "guard_bot": {
+            "$ref": "#/components/schemas/User"
           }
         },
         "type": "object"
@@ -696,6 +702,9 @@
           },
           "effect_id": {
             "type": "string"
+          },
+          "rich_message": {
+            "$ref": "#/components/schemas/RichMessage"
           },
           "animation": {
             "$ref": "#/components/schemas/Animation"
@@ -1783,6 +1792,18 @@
         },
         "type": "object"
       },
+      "Link": {
+        "description": "Represents an HTTP link.",
+        "required": [
+          "url"
+        ],
+        "properties": {
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "PollMedia": {
         "description": "At most one of the optional fields can be present in any given object.",
         "properties": {
@@ -1794,6 +1815,9 @@
           },
           "document": {
             "$ref": "#/components/schemas/Document"
+          },
+          "link": {
+            "$ref": "#/components/schemas/Link"
           },
           "live_photo": {
             "$ref": "#/components/schemas/LivePhoto"
@@ -1853,6 +1877,9 @@
         "anyOf": [
           {
             "$ref": "#/components/schemas/InputMediaAnimation"
+          },
+          {
+            "$ref": "#/components/schemas/InputMediaLink"
           },
           {
             "$ref": "#/components/schemas/InputMediaLivePhoto"
@@ -4047,6 +4074,9 @@
           },
           "invite_link": {
             "$ref": "#/components/schemas/ChatInviteLink"
+          },
+          "query_id": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -5888,6 +5918,23 @@
         },
         "type": "object"
       },
+      "InputMediaLink": {
+        "description": "Represents an HTTP link to be sent.",
+        "required": [
+          "type",
+          "url"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "link"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "InputMediaLivePhoto": {
         "description": "Represents a live photo to be sent.",
         "required": [
@@ -6442,6 +6489,1163 @@
             "items": {
               "type": "string"
             }
+          }
+        },
+        "type": "object"
+      },
+      "RichMessage": {
+        "description": "Rich formatted message.",
+        "required": [
+          "blocks"
+        ],
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "is_rtl": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichMessage": {
+        "description": "Describes a rich message to be sent. Exactly one of the fields html or markdown must be used.",
+        "properties": {
+          "html": {
+            "type": "string"
+          },
+          "markdown": {
+            "type": "string"
+          },
+          "is_rtl": {
+            "type": "boolean"
+          },
+          "skip_entity_detection": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "RichText": {
+        "description": "This object represents a rich formatted text. Currently, it can be either a String for plain text, an Array of RichText, or any of the following types:",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/RichTextBold"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextItalic"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextUnderline"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextStrikethrough"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextSpoiler"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextDateTime"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextTextMention"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextSubscript"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextSuperscript"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextMarked"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextCode"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextCustomEmoji"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextMathematicalExpression"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextUrl"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextEmailAddress"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextPhoneNumber"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextBankCardNumber"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextMention"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextHashtag"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextCashtag"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextBotCommand"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextAnchor"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextAnchorLink"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextReference"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextReferenceLink"
+          }
+        ]
+      },
+      "RichTextBold": {
+        "description": "A bold text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextItalic": {
+        "description": "An italicized text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextUnderline": {
+        "description": "An underlined text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextStrikethrough": {
+        "description": "A strikethrough text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextSpoiler": {
+        "description": "A text covered by a spoiler.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextDateTime": {
+        "description": "Formatted date and time.",
+        "required": [
+          "type",
+          "text",
+          "unix_time",
+          "date_time_format"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "unix_time": {
+            "type": "integer"
+          },
+          "date_time_format": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextTextMention": {
+        "description": "A mention of a Telegram user by their identifier.",
+        "required": [
+          "type",
+          "text",
+          "user"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextSubscript": {
+        "description": "A subscript text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextSuperscript": {
+        "description": "A superscript text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextMarked": {
+        "description": "A marked text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextCode": {
+        "description": "A monowidth text.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextCustomEmoji": {
+        "description": "A custom emoji.",
+        "required": [
+          "type",
+          "custom_emoji_id",
+          "alternative_text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "custom_emoji_id": {
+            "type": "string"
+          },
+          "alternative_text": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextMathematicalExpression": {
+        "description": "A mathematical expression.",
+        "required": [
+          "type",
+          "expression"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextUrl": {
+        "description": "A text with a link.",
+        "required": [
+          "type",
+          "text",
+          "url"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextEmailAddress": {
+        "description": "A text with an email address.",
+        "required": [
+          "type",
+          "text",
+          "email_address"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "email_address": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextPhoneNumber": {
+        "description": "A text with a phone number.",
+        "required": [
+          "type",
+          "text",
+          "phone_number"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "phone_number": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextBankCardNumber": {
+        "description": "A text with a bank card number.",
+        "required": [
+          "type",
+          "text",
+          "bank_card_number"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "bank_card_number": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextMention": {
+        "description": "A mention by a username.",
+        "required": [
+          "type",
+          "text",
+          "username"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextHashtag": {
+        "description": "A hashtag.",
+        "required": [
+          "type",
+          "text",
+          "hashtag"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "hashtag": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextCashtag": {
+        "description": "A cashtag.",
+        "required": [
+          "type",
+          "text",
+          "cashtag"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "cashtag": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextBotCommand": {
+        "description": "A bot command.",
+        "required": [
+          "type",
+          "text",
+          "bot_command"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "bot_command": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextAnchor": {
+        "description": "An anchor.",
+        "required": [
+          "type",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextAnchorLink": {
+        "description": "A link to an anchor.",
+        "required": [
+          "type",
+          "text",
+          "anchor_name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "anchor_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextReference": {
+        "description": "A reference.",
+        "required": [
+          "type",
+          "text",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextReferenceLink": {
+        "description": "A link to a reference.",
+        "required": [
+          "type",
+          "text",
+          "reference_name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "reference_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockCaption": {
+        "description": "Caption of a rich formatted block.",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockTableCell": {
+        "description": "Cell in a table.",
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "is_header": {
+            "type": "boolean",
+            "default": true
+          },
+          "colspan": {
+            "type": "integer"
+          },
+          "rowspan": {
+            "type": "integer"
+          },
+          "align": {
+            "type": "string"
+          },
+          "valign": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "align",
+          "valign"
+        ],
+        "type": "object"
+      },
+      "RichBlockListItem": {
+        "description": "An item of a list.",
+        "required": [
+          "label",
+          "blocks"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "has_checkbox": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_checked": {
+            "type": "boolean",
+            "default": true
+          },
+          "value": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlock": {
+        "description": "This object represents a block in a rich formatted message. Currently, it can be any of the following types:",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/RichBlockParagraph"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockSectionHeading"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockPreformatted"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockFooter"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockDivider"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockMathematicalExpression"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockAnchor"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockList"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockBlockQuotation"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockPullQuotation"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockCollage"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockSlideshow"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockTable"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockDetails"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockMap"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockAnimation"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockAudio"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockPhoto"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockVideo"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockVoiceNote"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockThinking"
+          }
+        ]
+      },
+      "RichBlockParagraph": {
+        "description": "A text paragraph, corresponding to the HTML tag <p>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockSectionHeading": {
+        "description": "A section heading, corresponding to the HTML tags <h1>, <h2>, <h3>, <h4>, <h5>, or <h6>.",
+        "required": [
+          "type",
+          "text",
+          "size"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "size": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockPreformatted": {
+        "description": "A preformatted text block, corresponding to the nested HTML tags <pre> and <code>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockFooter": {
+        "description": "A footer, corresponding to the HTML tag <footer>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockDivider": {
+        "description": "A divider, corresponding to the HTML tag <hr/>.",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockMathematicalExpression": {
+        "description": "A block with a mathematical expression in LaTeX format, corresponding to the custom HTML tag <tg-math-block>.",
+        "required": [
+          "type",
+          "expression"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockAnchor": {
+        "description": "A block with an anchor, corresponding to the HTML tag <a> with the attribute name.",
+        "required": [
+          "type",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockList": {
+        "description": "A list of blocks, corresponding to the HTML tag <ul> or <ol> with multiple nested tags <li>.",
+        "required": [
+          "type",
+          "items"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlockListItem"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockBlockQuotation": {
+        "description": "A block quotation, corresponding to the HTML tag <blockquote>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockPullQuotation": {
+        "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockCollage": {
+        "description": "A collage, corresponding to the custom HTML tag <tg-collage>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockSlideshow": {
+        "description": "A slideshow, corresponding to the custom HTML tag <tg-slideshow>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockTable": {
+        "description": "A table, corresponding to the HTML tag <table>.",
+        "required": [
+          "type",
+          "cells"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RichBlockTableCell"
+              }
+            }
+          },
+          "is_bordered": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_striped": {
+            "type": "boolean",
+            "default": true
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockDetails": {
+        "description": "An expandable block for details disclosure, corresponding to the HTML tag <details>.",
+        "required": [
+          "type",
+          "summary",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichBlock"
+            }
+          },
+          "is_open": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockMap": {
+        "description": "A block with a map, corresponding to the custom HTML tag <tg-map>.",
+        "required": [
+          "type",
+          "location",
+          "zoom",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "zoom": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockAnimation": {
+        "description": "A block with an animation, corresponding to the HTML tag <video>.",
+        "required": [
+          "type",
+          "animation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "animation": {
+            "$ref": "#/components/schemas/Animation"
+          },
+          "has_spoiler": {
+            "type": "boolean",
+            "default": true
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockAudio": {
+        "description": "A block with a music file, corresponding to the HTML tag <audio>.",
+        "required": [
+          "type",
+          "audio"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "audio": {
+            "$ref": "#/components/schemas/Audio"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockPhoto": {
+        "description": "A block with a photo, corresponding to the HTML tag <img>.",
+        "required": [
+          "type",
+          "photo"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PhotoSize"
+            }
+          },
+          "has_spoiler": {
+            "type": "boolean",
+            "default": true
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockVideo": {
+        "description": "A block with a video, corresponding to the HTML tag <video>.",
+        "required": [
+          "type",
+          "video"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "video": {
+            "$ref": "#/components/schemas/Video"
+          },
+          "has_spoiler": {
+            "type": "boolean",
+            "default": true
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockVoiceNote": {
+        "description": "A block with a voice note, corresponding to the HTML tag <audio>.",
+        "required": [
+          "type",
+          "voice_note"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "voice_note": {
+            "$ref": "#/components/schemas/Voice"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockThinking": {
+        "description": "A block with a “Thinking…” placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji, which are recommended for usage in the block.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
           }
         },
         "type": "object"
@@ -7533,10 +8737,13 @@
         "type": "object"
       },
       "InputMessageContent": {
-        "description": "This object represents the content of a message to be sent as a result of an inline query. Telegram clients currently support the following 5 types:",
+        "description": "This object represents the content of a message to be sent as a result of an inline query. Telegram clients currently support the following types:",
         "anyOf": [
           {
             "$ref": "#/components/schemas/InputTextMessageContent"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichMessageContent"
           },
           {
             "$ref": "#/components/schemas/InputLocationMessageContent"
@@ -7572,6 +8779,18 @@
           },
           "link_preview_options": {
             "$ref": "#/components/schemas/LinkPreviewOptions"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichMessageContent": {
+        "description": "Represents the content of a rich message to be sent as the result of an inline query.",
+        "required": [
+          "rich_message"
+        ],
+        "properties": {
+          "rich_message": {
+            "$ref": "#/components/schemas/InputRichMessage"
           }
         },
         "type": "object"
@@ -19544,6 +20763,224 @@
         }
       }
     },
+    "/answerChatJoinRequestQuery": {
+      "description": "Use this method to process a received chat join request query. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "result"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "result": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/sendChatJoinRequestWebApp": {
+      "description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call answerChatJoinRequestQuery to resolve the join request query based on the user interaction with the Mini App. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "web_app_url"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "web_app_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "web_app_url"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "web_app_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_join_request_query_id",
+                  "web_app_url"
+                ],
+                "properties": {
+                  "chat_join_request_query_id": {
+                    "type": "string"
+                  },
+                  "web_app_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/setChatPhoto": {
       "description": "Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns True on success.",
       "post": {
@@ -29247,10 +30684,9 @@
       }
     },
     "/editMessageText": {
-      "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "description": "Use this method to edit text, rich and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -29290,13 +30726,13 @@
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
                   },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
                   }
-                },
-                "required": [
-                  "text"
-                ]
+                }
               }
             },
             "application/x-www-form-urlencoded": {
@@ -29337,13 +30773,13 @@
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
                   },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
                   }
-                },
-                "required": [
-                  "text"
-                ]
+                }
               }
             },
             "multipart/form-data": {
@@ -29384,13 +30820,13 @@
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
                   },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
                   }
-                },
-                "required": [
-                  "text"
-                ]
+                }
               }
             }
           }
@@ -29649,7 +31085,7 @@
       }
     },
     "/editMessageMedia": {
-      "description": "Use this method to edit animation, audio, document, live photo, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+      "description": "Use this method to edit animation, audio, document, live photo, photo, or video messages, or to replace a text or a rich message with a media. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
         "requestBody": {
           "required": true,
@@ -33420,6 +34856,395 @@
                 "properties": {
                   "name": {
                     "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/sendRichMessage": {
+      "description": "Use this method to send rich messages. If the message contains a block with a media element, then the bot must have the right to send the media to the chat. On success, the sent Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "rich_message"
+                ]
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "rich_message"
+                ]
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "direct_messages_topic_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "suggested_post_parameters": {
+                    "$ref": "#/components/schemas/SuggestedPostParameters"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                },
+                "required": [
+                  "chat_id",
+                  "rich_message"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/sendRichMessageDraft": {
+      "description": "Use this method to stream a partial rich message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you must call sendRichMessage with the complete message to persist it in the user's chat. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "rich_message"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "rich_message"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "draft_id",
+                  "rich_message"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "type": "integer"
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "draft_id": {
+                    "type": "integer"
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
                   }
                 }
               }
