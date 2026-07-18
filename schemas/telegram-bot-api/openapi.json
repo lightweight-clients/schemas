@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "10.1.0"
+    "version": "10.2.0"
   },
   "servers": [
     {
@@ -244,6 +244,9 @@
           },
           "managed_bot": {
             "$ref": "#/components/schemas/ManagedBotUpdated"
+          },
+          "subscription": {
+            "$ref": "#/components/schemas/BotSubscriptionUpdated"
           }
         },
         "type": "object"
@@ -575,6 +578,9 @@
           },
           "guard_bot": {
             "$ref": "#/components/schemas/User"
+          },
+          "community": {
+            "$ref": "#/components/schemas/Community"
           }
         },
         "type": "object"
@@ -610,6 +616,12 @@
           },
           "sender_tag": {
             "type": "string"
+          },
+          "receiver_user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "ephemeral_message_id": {
+            "type": "integer"
           },
           "date": {
             "type": "integer"
@@ -879,6 +891,12 @@
           },
           "checklist_tasks_added": {
             "$ref": "#/components/schemas/ChecklistTasksAdded"
+          },
+          "community_chat_added": {
+            "$ref": "#/components/schemas/CommunityChatAdded"
+          },
+          "community_chat_removed": {
+            "$ref": "#/components/schemas/CommunityChatRemoved"
           },
           "direct_message_price_changed": {
             "$ref": "#/components/schemas/DirectMessagePriceChanged"
@@ -1161,9 +1179,6 @@
       },
       "ReplyParameters": {
         "description": "Describes reply parameters for the message that is being sent.",
-        "required": [
-          "message_id"
-        ],
         "properties": {
           "message_id": {
             "type": "integer"
@@ -1177,6 +1192,9 @@
                 "type": "string"
               }
             ]
+          },
+          "ephemeral_message_id": {
+            "type": "integer"
           },
           "allow_sending_without_reply": {
             "type": "boolean"
@@ -2217,45 +2235,6 @@
         },
         "type": "object"
       },
-      "ChecklistTasksDone": {
-        "description": "Describes a service message about checklist tasks marked as done or not done.",
-        "properties": {
-          "checklist_message": {
-            "$ref": "#/components/schemas/Message"
-          },
-          "marked_as_done_task_ids": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            }
-          },
-          "marked_as_not_done_task_ids": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            }
-          }
-        },
-        "type": "object"
-      },
-      "ChecklistTasksAdded": {
-        "description": "Describes a service message about tasks added to a checklist.",
-        "properties": {
-          "checklist_message": {
-            "$ref": "#/components/schemas/Message"
-          },
-          "tasks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChecklistTask"
-            }
-          }
-        },
-        "required": [
-          "tasks"
-        ],
-        "type": "object"
-      },
       "Location": {
         "description": "This object represents a point on the map.",
         "required": [
@@ -2388,6 +2367,26 @@
           },
           "bot": {
             "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "BotSubscriptionUpdated": {
+        "description": "This object contains information about changes to a user payment subscription toward the current bot.",
+        "required": [
+          "user",
+          "invoice_payload",
+          "state"
+        ],
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "invoice_payload": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -2650,6 +2649,61 @@
             "$ref": "#/components/schemas/BackgroundType"
           }
         },
+        "type": "object"
+      },
+      "ChecklistTasksDone": {
+        "description": "Describes a service message about checklist tasks marked as done or not done.",
+        "properties": {
+          "checklist_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "marked_as_done_task_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "marked_as_not_done_task_ids": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ChecklistTasksAdded": {
+        "description": "Describes a service message about tasks added to a checklist.",
+        "properties": {
+          "checklist_message": {
+            "$ref": "#/components/schemas/Message"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChecklistTask"
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ],
+        "type": "object"
+      },
+      "CommunityChatAdded": {
+        "description": "Describes a service message about a chat being added to a community.",
+        "required": [
+          "community"
+        ],
+        "properties": {
+          "community": {
+            "$ref": "#/components/schemas/Community"
+          }
+        },
+        "type": "object"
+      },
+      "CommunityChatRemoved": {
+        "description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
         "type": "object"
       },
       "ForumTopicCreated": {
@@ -3587,6 +3641,22 @@
           },
           "selective": {
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Community": {
+        "description": "Represents a community (a group of chats).",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -5168,6 +5238,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "is_ephemeral": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -6150,6 +6223,38 @@
         },
         "type": "object"
       },
+      "InputMediaVoiceNote": {
+        "description": "Represents a voice message file to be sent.",
+        "required": [
+          "type",
+          "media"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "voice_note"
+          },
+          "media": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "duration": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "InputFile": {
         "description": "This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.",
         "type": "object"
@@ -6512,19 +6617,63 @@
         "type": "object"
       },
       "InputRichMessage": {
-        "description": "Describes a rich message to be sent. Exactly one of the fields html or markdown must be used.",
+        "description": "Describes a rich message to be sent. Exactly one of the fields html, markdown, or blocks must be used.",
         "properties": {
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
           "html": {
             "type": "string"
           },
           "markdown": {
             "type": "string"
           },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichMessageMedia"
+            }
+          },
           "is_rtl": {
             "type": "boolean"
           },
           "skip_entity_detection": {
             "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichMessageMedia": {
+        "description": "Describes a media element embedded in an outgoing rich message.",
+        "required": [
+          "id",
+          "media"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "media": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/InputMediaAnimation"
+              },
+              {
+                "$ref": "#/components/schemas/InputMediaAudio"
+              },
+              {
+                "$ref": "#/components/schemas/InputMediaPhoto"
+              },
+              {
+                "$ref": "#/components/schemas/InputMediaVideo"
+              },
+              {
+                "$ref": "#/components/schemas/InputMediaVoiceNote"
+              }
+            ]
           }
         },
         "type": "object"
@@ -7635,7 +7784,525 @@
         "type": "object"
       },
       "RichBlockThinking": {
-        "description": "A block with a “Thinking…” placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji, which are recommended for usage in the block.",
+        "description": "A block with a “Thinking…” placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji that are recommended for usage in the block.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockListItem": {
+        "description": "An item of a list to be sent.",
+        "required": [
+          "blocks"
+        ],
+        "properties": {
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
+          "has_checkbox": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_checked": {
+            "type": "boolean",
+            "default": true
+          },
+          "value": {
+            "type": "integer"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlock": {
+        "description": "This object represents a block in a rich formatted message to be sent. Currently, it can be any of the following types:",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/InputRichBlockParagraph"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockSectionHeading"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockPreformatted"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockFooter"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockDivider"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockMathematicalExpression"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockAnchor"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockList"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockBlockQuotation"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockPullQuotation"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockCollage"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockSlideshow"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockTable"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockDetails"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockMap"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockAnimation"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockAudio"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockPhoto"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockVideo"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockVoiceNote"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockThinking"
+          }
+        ]
+      },
+      "InputRichBlockParagraph": {
+        "description": "A text paragraph, corresponding to the HTML tag <p>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockSectionHeading": {
+        "description": "A section heading, corresponding to the HTML tags <h1>, <h2>, <h3>, <h4>, <h5>, or <h6>.",
+        "required": [
+          "type",
+          "text",
+          "size"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "size": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockPreformatted": {
+        "description": "A preformatted text block, corresponding to the nested HTML tags <pre> and <code>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "language": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockFooter": {
+        "description": "A footer, corresponding to the HTML tag <footer>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockDivider": {
+        "description": "A divider, corresponding to the HTML tag <hr/>.",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockMathematicalExpression": {
+        "description": "A block with a mathematical expression in LaTeX format, corresponding to the custom HTML tag <tg-math-block>.",
+        "required": [
+          "type",
+          "expression"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockAnchor": {
+        "description": "A block with an anchor, corresponding to the HTML tag <a> with the attribute name.",
+        "required": [
+          "type",
+          "name"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockList": {
+        "description": "A list of blocks, corresponding to the HTML tag <ul> or <ol> with multiple nested tags <li>.",
+        "required": [
+          "type",
+          "items"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlockListItem"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockBlockQuotation": {
+        "description": "A block quotation, corresponding to the HTML tag <blockquote>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockPullQuotation": {
+        "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockCollage": {
+        "description": "A collage, corresponding to the custom HTML tag <tg-collage>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockSlideshow": {
+        "description": "A slideshow, corresponding to the custom HTML tag <tg-slideshow>.",
+        "required": [
+          "type",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockTable": {
+        "description": "A table, corresponding to the HTML tag <table>.",
+        "required": [
+          "type",
+          "cells"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/RichBlockTableCell"
+              }
+            }
+          },
+          "is_bordered": {
+            "type": "boolean",
+            "default": true
+          },
+          "is_striped": {
+            "type": "boolean",
+            "default": true
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockDetails": {
+        "description": "An expandable block for details disclosure, corresponding to the HTML tag <details>.",
+        "required": [
+          "type",
+          "summary",
+          "blocks"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "blocks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InputRichBlock"
+            }
+          },
+          "is_open": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockMap": {
+        "description": "A block with a map, corresponding to the custom HTML tag <tg-map>. The map's width and height must not exceed 10000 in total. The width and height ratio must be at most 20.",
+        "required": [
+          "type",
+          "location",
+          "zoom",
+          "width",
+          "height"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "location": {
+            "$ref": "#/components/schemas/Location"
+          },
+          "zoom": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockAnimation": {
+        "description": "A block with an animation, corresponding to the HTML tag <video>.",
+        "required": [
+          "type",
+          "animation"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "animation": {
+            "$ref": "#/components/schemas/InputMediaAnimation"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockAudio": {
+        "description": "A block with a music file, corresponding to the HTML tag <audio>.",
+        "required": [
+          "type",
+          "audio"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "audio": {
+            "$ref": "#/components/schemas/InputMediaAudio"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockPhoto": {
+        "description": "A block with a photo, corresponding to the HTML tag <img>.",
+        "required": [
+          "type",
+          "photo"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "photo": {
+            "$ref": "#/components/schemas/InputMediaPhoto"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockVideo": {
+        "description": "A block with a video, corresponding to the HTML tag <video>.",
+        "required": [
+          "type",
+          "video"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "video": {
+            "$ref": "#/components/schemas/InputMediaVideo"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockVoiceNote": {
+        "description": "A block with a voice note, corresponding to the HTML tag <audio>.",
+        "required": [
+          "type",
+          "voice_note"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "voice_note": {
+            "$ref": "#/components/schemas/InputMediaVoiceNote"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockThinking": {
+        "description": "A block with a “Thinking…” placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji that are recommended for usage in the block.",
         "required": [
           "type",
           "text"
@@ -10673,6 +11340,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "text": {
                     "type": "string"
                   },
@@ -10752,6 +11425,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "text": {
                     "type": "string"
                   },
@@ -10830,6 +11509,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "text": {
                     "type": "string"
@@ -11166,7 +11851,7 @@
       }
     },
     "/forwardMessages": {
-      "description": "Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of MessageId of the sent messages is returned.",
+      "description": "Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an Array of MessageId of the sent messages is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -11714,7 +12399,7 @@
       }
     },
     "/copyMessages": {
-      "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of MessageId of the sent messages is returned.",
+      "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of MessageId of the sent messages is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -11962,6 +12647,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "photo": {
                     "anyOf": [
                       {
@@ -12054,6 +12745,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "photo": {
                     "anyOf": [
                       {
@@ -12145,6 +12842,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "photo": {
                     "anyOf": [
@@ -12296,6 +12999,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "live_photo": {
                     "anyOf": [
                       {
@@ -12399,6 +13108,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "live_photo": {
                     "anyOf": [
                       {
@@ -12501,6 +13216,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "live_photo": {
                     "anyOf": [
@@ -12663,6 +13384,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "audio": {
                     "anyOf": [
                       {
@@ -12768,6 +13495,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "audio": {
                     "anyOf": [
                       {
@@ -12872,6 +13605,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "audio": {
                     "anyOf": [
@@ -13036,6 +13775,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "document": {
                     "anyOf": [
                       {
@@ -13135,6 +13880,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "document": {
                     "anyOf": [
                       {
@@ -13233,6 +13984,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "document": {
                     "anyOf": [
@@ -13391,6 +14148,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "video": {
                     "anyOf": [
                       {
@@ -13518,6 +14281,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "video": {
                     "anyOf": [
                       {
@@ -13644,6 +14413,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "video": {
                     "anyOf": [
@@ -13830,6 +14605,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "animation": {
                     "anyOf": [
                       {
@@ -13941,6 +14722,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "animation": {
                     "anyOf": [
                       {
@@ -14051,6 +14838,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "animation": {
                     "anyOf": [
@@ -14221,6 +15014,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "voice": {
                     "anyOf": [
                       {
@@ -14310,6 +15109,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "voice": {
                     "anyOf": [
                       {
@@ -14398,6 +15203,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "voice": {
                     "anyOf": [
@@ -14546,6 +15357,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "video_note": {
                     "anyOf": [
                       {
@@ -14636,6 +15453,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "video_note": {
                     "anyOf": [
                       {
@@ -14725,6 +15548,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "video_note": {
                     "anyOf": [
@@ -15171,7 +16000,7 @@
       }
     },
     "/sendMediaGroup": {
-      "description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.",
+      "description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an Array of Message objects that were sent is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -15461,6 +16290,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -15544,6 +16379,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -15626,6 +16467,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "latitude": {
                     "type": "number"
@@ -15768,6 +16615,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -15859,6 +16712,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "latitude": {
                     "type": "number"
                   },
@@ -15949,6 +16808,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "latitude": {
                     "type": "number"
@@ -16099,6 +16964,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "phone_number": {
                     "type": "string"
                   },
@@ -16176,6 +17047,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "phone_number": {
                     "type": "string"
                   },
@@ -16252,6 +17129,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "phone_number": {
                     "type": "string"
@@ -22255,7 +23138,7 @@
       }
     },
     "/getChatMemberCount": {
-      "description": "Use this method to get the number of members in a chat. Returns Int on success.",
+      "description": "Use this method to get the number of members in a chat. Returns Integer on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -22336,7 +23219,7 @@
                       "type": "object",
                       "properties": {
                         "result": {
-                          "type": "integer"
+                          "type": "integereger"
                         }
                       }
                     }
@@ -22503,7 +23386,7 @@
       }
     },
     "/getUserPersonalChatMessages": {
-      "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of Message objects is returned.",
+      "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an Array of Message objects is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -32085,6 +32968,706 @@
         }
       }
     },
+    "/editEphemeralMessageText": {
+      "description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "text"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "text": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "link_preview_options": {
+                    "$ref": "#/components/schemas/LinkPreviewOptions"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editEphemeralMessageMedia": {
+      "description": "Use this method to edit the media of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "media"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "media"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id",
+                  "media"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "media": {
+                    "$ref": "#/components/schemas/InputMedia"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editEphemeralMessageCaption": {
+      "description": "Use this method to edit the caption of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editEphemeralMessageReplyMarkup": {
+      "description": "Use this method to edit only the reply markup of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  },
+                  "reply_markup": {
+                    "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/approveSuggestedPost": {
       "description": "Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns True on success.",
       "post": {
@@ -32590,6 +34173,148 @@
         }
       }
     },
+    "/deleteEphemeralMessage": {
+      "description": "Use this method to delete an ephemeral message. Note that it is not guaranteed that the user will receive the message deletion event, especially if they are offline. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "receiver_user_id",
+                  "ephemeral_message_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "ephemeral_message_id": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/deleteMessageReaction": {
       "description": "Use this method to remove a reaction from a message in a group or a supergroup chat. The bot must have the 'can_delete_messages' administrator right in the chat. Returns True on success.",
       "post": {
@@ -32903,6 +34628,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "sticker": {
                     "anyOf": [
                       {
@@ -32980,6 +34711,12 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
+                  },
                   "sticker": {
                     "anyOf": [
                       {
@@ -33056,6 +34793,12 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "receiver_user_id": {
+                    "type": "integer"
+                  },
+                  "callback_query_id": {
+                    "type": "string"
                   },
                   "sticker": {
                     "anyOf": [
