@@ -165,7 +165,7 @@ jobs:
         run: cat schemas.json
 
       - name: Create Pull Request with current (uncommitted) changes
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Update client for ${{ matrix.api_name }}"
           title: "Update client for ${{ matrix.api_name }}"
