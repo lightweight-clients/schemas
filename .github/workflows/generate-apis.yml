@@ -24,7 +24,7 @@ jobs:
       # hashes: is a space-separated list of hashes (one per entry in env.api_names)
       hashes: ${{ steps.fetch-latest-hashes.outputs.hashes }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Fetch latest versions
         id: fetch-latest-hashes
@@ -86,7 +86,7 @@ jobs:
       matrix:
         api_name: ${{ fromJson(needs.compare-versions.outputs.updated_api_names) }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Run the generator
         run: bash generators/${{ matrix.api_name }}.sh schemas/${{ matrix.api_name }}/
