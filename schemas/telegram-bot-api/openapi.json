@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "10.2.0"
+    "version": "10.3.0"
   },
   "servers": [
     {
@@ -247,6 +247,9 @@
           },
           "subscription": {
             "$ref": "#/components/schemas/BotSubscriptionUpdated"
+          },
+          "stopped_message_generation": {
+            "$ref": "#/components/schemas/MessageGenerationStopped"
           }
         },
         "type": "object"
@@ -895,6 +898,9 @@
           "community_chat_added": {
             "$ref": "#/components/schemas/CommunityChatAdded"
           },
+          "community_chat_joined": {
+            "$ref": "#/components/schemas/CommunityChatJoined"
+          },
           "community_chat_removed": {
             "$ref": "#/components/schemas/CommunityChatRemoved"
           },
@@ -1219,6 +1225,24 @@
           },
           "poll_option_id": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EphemeralMessageParameters": {
+        "description": "",
+        "required": [
+          "receiver_user_id"
+        ],
+        "properties": {
+          "receiver_user_id": {
+            "type": "integer"
+          },
+          "callback_query_id": {
+            "type": "string"
+          },
+          "replace_callback_query_message": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -1606,7 +1630,7 @@
         "type": "object"
       },
       "VideoNote": {
-        "description": "This object represents a video message (available in Telegram apps as of v.4.0).",
+        "description": "This object represents a video message.",
         "required": [
           "file_id",
           "file_unique_id",
@@ -2391,6 +2415,25 @@
         },
         "type": "object"
       },
+      "MessageGenerationStopped": {
+        "description": "This object describes an update about a user stopping message generation.",
+        "required": [
+          "chat",
+          "draft_id"
+        ],
+        "properties": {
+          "chat": {
+            "$ref": "#/components/schemas/Chat"
+          },
+          "message_thread_id": {
+            "type": "integer"
+          },
+          "draft_id": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
       "PollOptionAdded": {
         "description": "Describes a service message about an option added to a poll.",
         "properties": {
@@ -2691,7 +2734,19 @@
         "type": "object"
       },
       "CommunityChatAdded": {
-        "description": "Describes a service message about a chat being added to a community.",
+        "description": "Describes a service message about a chat or a bot being added to a community.",
+        "required": [
+          "community"
+        ],
+        "properties": {
+          "community": {
+            "$ref": "#/components/schemas/Community"
+          }
+        },
+        "type": "object"
+      },
+      "CommunityChatJoined": {
+        "description": "Describes a service message about a chat being joined by a user from a community.",
         "required": [
           "community"
         ],
@@ -2703,7 +2758,7 @@
         "type": "object"
       },
       "CommunityChatRemoved": {
-        "description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
+        "description": "Describes a service message about a chat or a bot being removed from a community. Currently holds no information.",
         "type": "object"
       },
       "ForumTopicCreated": {
@@ -3314,6 +3369,9 @@
           },
           "selective": {
             "type": "boolean"
+          },
+          "force_reply": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3488,6 +3546,9 @@
                 "$ref": "#/components/schemas/InlineKeyboardButton"
               }
             }
+          },
+          "force_reply": {
+            "type": "boolean"
           }
         },
         "type": "object"
@@ -3536,12 +3597,15 @@
           },
           "pay": {
             "type": "boolean"
+          },
+          "disabled": {
+            "$ref": "#/components/schemas/DisabledButton"
           }
         },
         "type": "object"
       },
       "LoginUrl": {
-        "description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nTelegram apps support these buttons as of version 5.7.",
+        "description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. It serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:",
         "required": [
           "url"
         ],
@@ -3592,6 +3656,10 @@
             "type": "string"
           }
         },
+        "type": "object"
+      },
+      "DisabledButton": {
+        "description": "This object represents a disabled button which does nothing. Currently holds no information.",
         "type": "object"
       },
       "CallbackQuery": {
@@ -3744,7 +3812,8 @@
           "can_invite_users",
           "can_post_stories",
           "can_edit_stories",
-          "can_delete_stories"
+          "can_delete_stories",
+          "can_send_welcome_messages"
         ],
         "properties": {
           "is_anonymous": {
@@ -3796,6 +3865,9 @@
             "type": "boolean"
           },
           "can_manage_tags": {
+            "type": "boolean"
+          },
+          "can_send_welcome_messages": {
             "type": "boolean"
           }
         },
@@ -3900,7 +3972,8 @@
           "can_invite_users",
           "can_post_stories",
           "can_edit_stories",
-          "can_delete_stories"
+          "can_delete_stories",
+          "can_send_welcome_messages"
         ],
         "properties": {
           "status": {
@@ -3961,6 +4034,9 @@
             "type": "boolean"
           },
           "can_manage_tags": {
+            "type": "boolean"
+          },
+          "can_send_welcome_messages": {
             "type": "boolean"
           },
           "custom_title": {
@@ -5009,6 +5085,19 @@
           },
           "origin": {
             "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "is_private": {
+            "type": "boolean",
+            "default": true
           },
           "last_resale_currency": {
             "type": "string"
@@ -6665,6 +6754,9 @@
                 "$ref": "#/components/schemas/InputMediaAudio"
               },
               {
+                "$ref": "#/components/schemas/InputMediaDocument"
+              },
+              {
                 "$ref": "#/components/schemas/InputMediaPhoto"
               },
               {
@@ -6674,6 +6766,48 @@
                 "$ref": "#/components/schemas/InputMediaVoiceNote"
               }
             ]
+          }
+        },
+        "type": "object"
+      },
+      "RichMessageButton": {
+        "description": "This object represents a button in a RichMessage. Exactly one of the fields other than text and style must be used to specify the type of the button.",
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "style": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "callback_data": {
+            "type": "string"
+          },
+          "web_app": {
+            "$ref": "#/components/schemas/WebAppInfo"
+          },
+          "login_url": {
+            "$ref": "#/components/schemas/LoginUrl"
+          },
+          "switch_inline_query": {
+            "type": "string"
+          },
+          "switch_inline_query_current_chat": {
+            "type": "string"
+          },
+          "switch_inline_query_chosen_chat": {
+            "$ref": "#/components/schemas/SwitchInlineQueryChosenChat"
+          },
+          "copy_text": {
+            "$ref": "#/components/schemas/CopyTextButton"
+          },
+          "disabled": {
+            "$ref": "#/components/schemas/DisabledButton"
           }
         },
         "type": "object"
@@ -6743,6 +6877,9 @@
           },
           {
             "$ref": "#/components/schemas/RichTextBotCommand"
+          },
+          {
+            "$ref": "#/components/schemas/RichTextButton"
           },
           {
             "$ref": "#/components/schemas/RichTextAnchor"
@@ -7142,6 +7279,22 @@
         },
         "type": "object"
       },
+      "RichTextButton": {
+        "description": "A button.",
+        "required": [
+          "type",
+          "button"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "button": {
+            "$ref": "#/components/schemas/RichMessageButton"
+          }
+        },
+        "type": "object"
+      },
       "RichTextAnchor": {
         "description": "An anchor.",
         "required": [
@@ -7326,6 +7479,9 @@
             "$ref": "#/components/schemas/RichBlockBlockQuotation"
           },
           {
+            "$ref": "#/components/schemas/RichBlockExpandableBlockQuotation"
+          },
+          {
             "$ref": "#/components/schemas/RichBlockPullQuotation"
           },
           {
@@ -7344,10 +7500,16 @@
             "$ref": "#/components/schemas/RichBlockMap"
           },
           {
+            "$ref": "#/components/schemas/RichBlockButtons"
+          },
+          {
             "$ref": "#/components/schemas/RichBlockAnimation"
           },
           {
             "$ref": "#/components/schemas/RichBlockAudio"
+          },
+          {
+            "$ref": "#/components/schemas/RichBlockDocument"
           },
           {
             "$ref": "#/components/schemas/RichBlockPhoto"
@@ -7519,6 +7681,25 @@
         },
         "type": "object"
       },
+      "RichBlockExpandableBlockQuotation": {
+        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
       "RichBlockPullQuotation": {
         "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
         "required": [
@@ -7609,6 +7790,10 @@
             "type": "boolean",
             "default": true
           },
+          "is_compact": {
+            "type": "boolean",
+            "default": true
+          },
           "caption": {
             "$ref": "#/components/schemas/RichText"
           }
@@ -7673,6 +7858,28 @@
         },
         "type": "object"
       },
+      "RichBlockButtons": {
+        "description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <tg-button-row>.",
+        "required": [
+          "type",
+          "buttons"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichMessageButton"
+            }
+          },
+          "align": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "RichBlockAnimation": {
         "description": "A block with an animation, corresponding to the HTML tag <video>.",
         "required": [
@@ -7708,6 +7915,25 @@
           },
           "audio": {
             "$ref": "#/components/schemas/Audio"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "RichBlockDocument": {
+        "description": "A block with a general file, corresponding to the custom HTML tag <tg-document>.",
+        "required": [
+          "type",
+          "document"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "document": {
+            "$ref": "#/components/schemas/Document"
           },
           "caption": {
             "$ref": "#/components/schemas/RichBlockCaption"
@@ -7859,6 +8085,9 @@
             "$ref": "#/components/schemas/InputRichBlockBlockQuotation"
           },
           {
+            "$ref": "#/components/schemas/InputRichBlockExpandableBlockQuotation"
+          },
+          {
             "$ref": "#/components/schemas/InputRichBlockPullQuotation"
           },
           {
@@ -7877,10 +8106,16 @@
             "$ref": "#/components/schemas/InputRichBlockMap"
           },
           {
+            "$ref": "#/components/schemas/InputRichBlockButtons"
+          },
+          {
             "$ref": "#/components/schemas/InputRichBlockAnimation"
           },
           {
             "$ref": "#/components/schemas/InputRichBlockAudio"
+          },
+          {
+            "$ref": "#/components/schemas/InputRichBlockDocument"
           },
           {
             "$ref": "#/components/schemas/InputRichBlockPhoto"
@@ -8052,6 +8287,25 @@
         },
         "type": "object"
       },
+      "InputRichBlockExpandableBlockQuotation": {
+        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+        "required": [
+          "type",
+          "text"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "credit": {
+            "$ref": "#/components/schemas/RichText"
+          }
+        },
+        "type": "object"
+      },
       "InputRichBlockPullQuotation": {
         "description": "A quotation with centered text, loosely corresponding to the HTML tag <aside>.",
         "required": [
@@ -8142,6 +8396,10 @@
             "type": "boolean",
             "default": true
           },
+          "is_compact": {
+            "type": "boolean",
+            "default": true
+          },
           "caption": {
             "$ref": "#/components/schemas/RichText"
           }
@@ -8179,10 +8437,7 @@
         "description": "A block with a map, corresponding to the custom HTML tag <tg-map>. The map's width and height must not exceed 10000 in total. The width and height ratio must be at most 20.",
         "required": [
           "type",
-          "location",
-          "zoom",
-          "width",
-          "height"
+          "location"
         ],
         "properties": {
           "type": {
@@ -8202,6 +8457,28 @@
           },
           "caption": {
             "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockButtons": {
+        "description": "A block containing a list of buttons that are shown in one row, corresponding to the custom HTML tag <tg-button-row>.",
+        "required": [
+          "type",
+          "buttons"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "buttons": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichMessageButton"
+            }
+          },
+          "align": {
+            "type": "string"
           }
         },
         "type": "object"
@@ -8237,6 +8514,25 @@
           },
           "audio": {
             "$ref": "#/components/schemas/InputMediaAudio"
+          },
+          "caption": {
+            "$ref": "#/components/schemas/RichBlockCaption"
+          }
+        },
+        "type": "object"
+      },
+      "InputRichBlockDocument": {
+        "description": "A block with a general file, corresponding to the custom HTML tag <tg-document>.",
+        "required": [
+          "type",
+          "document"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "document": {
+            "$ref": "#/components/schemas/InputMediaDocument"
           },
           "caption": {
             "$ref": "#/components/schemas/RichBlockCaption"
@@ -11340,11 +11636,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "text": {
                     "type": "string"
@@ -11425,11 +11718,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "text": {
                     "type": "string"
@@ -11510,11 +11800,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "text": {
                     "type": "string"
@@ -12647,11 +12934,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "photo": {
                     "anyOf": [
@@ -12745,11 +13029,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "photo": {
                     "anyOf": [
@@ -12843,11 +13124,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "photo": {
                     "anyOf": [
@@ -12999,11 +13277,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "live_photo": {
                     "anyOf": [
@@ -13108,11 +13383,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "live_photo": {
                     "anyOf": [
@@ -13217,11 +13489,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "live_photo": {
                     "anyOf": [
@@ -13384,11 +13653,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "audio": {
                     "anyOf": [
@@ -13495,11 +13761,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "audio": {
                     "anyOf": [
@@ -13606,11 +13869,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "audio": {
                     "anyOf": [
@@ -13775,11 +14035,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "document": {
                     "anyOf": [
@@ -13880,11 +14137,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "document": {
                     "anyOf": [
@@ -13985,11 +14239,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "document": {
                     "anyOf": [
@@ -14148,11 +14399,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video": {
                     "anyOf": [
@@ -14281,11 +14529,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video": {
                     "anyOf": [
@@ -14414,11 +14659,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video": {
                     "anyOf": [
@@ -14605,11 +14847,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "animation": {
                     "anyOf": [
@@ -14722,11 +14961,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "animation": {
                     "anyOf": [
@@ -14839,11 +15075,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "animation": {
                     "anyOf": [
@@ -15014,11 +15247,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "voice": {
                     "anyOf": [
@@ -15109,11 +15339,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "voice": {
                     "anyOf": [
@@ -15204,11 +15431,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "voice": {
                     "anyOf": [
@@ -15329,7 +15553,7 @@
       }
     },
     "/sendVideoNote": {
-      "description": "As of v.4.0, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent Message is returned.",
+      "description": "Use this method to send a rounded square MPEG4 video of up to 1 minute long. On success, the sent Message is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -15357,11 +15581,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video_note": {
                     "anyOf": [
@@ -15453,11 +15674,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video_note": {
                     "anyOf": [
@@ -15549,11 +15767,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "video_note": {
                     "anyOf": [
@@ -16290,11 +16505,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16379,11 +16591,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16468,11 +16677,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16615,11 +16821,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16712,11 +16915,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16809,11 +17009,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "latitude": {
                     "type": "number"
@@ -16964,11 +17161,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "phone_number": {
                     "type": "string"
@@ -17047,11 +17241,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "phone_number": {
                     "type": "string"
@@ -17130,11 +17321,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "phone_number": {
                     "type": "string"
@@ -18242,6 +18430,12 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -18274,6 +18468,12 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -18306,6 +18506,12 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -19640,6 +19846,9 @@
                   },
                   "can_manage_tags": {
                     "type": "boolean"
+                  },
+                  "can_send_welcome_messages": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -19716,6 +19925,9 @@
                   },
                   "can_manage_tags": {
                     "type": "boolean"
+                  },
+                  "can_send_welcome_messages": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -19791,6 +20003,9 @@
                     "type": "boolean"
                   },
                   "can_manage_tags": {
+                    "type": "boolean"
+                  },
+                  "can_send_welcome_messages": {
                     "type": "boolean"
                   }
                 }
@@ -32969,7 +33184,7 @@
       }
     },
     "/editEphemeralMessageText": {
-      "description": "Use this method to edit an ephemeral text message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+      "description": "Use this method to edit an ephemeral text or rich message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -32980,8 +33195,7 @@
                 "required": [
                   "chat_id",
                   "receiver_user_id",
-                  "ephemeral_message_id",
-                  "text"
+                  "ephemeral_message_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -33011,6 +33225,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
                   },
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
@@ -33027,8 +33244,7 @@
                 "required": [
                   "chat_id",
                   "receiver_user_id",
-                  "ephemeral_message_id",
-                  "text"
+                  "ephemeral_message_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -33058,6 +33274,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
                   },
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
@@ -33074,8 +33293,7 @@
                 "required": [
                   "chat_id",
                   "receiver_user_id",
-                  "ephemeral_message_id",
-                  "text"
+                  "ephemeral_message_id"
                 ],
                 "properties": {
                   "chat_id": {
@@ -33105,6 +33323,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "rich_message": {
+                    "$ref": "#/components/schemas/InputRichMessage"
                   },
                   "link_preview_options": {
                     "$ref": "#/components/schemas/LinkPreviewOptions"
@@ -33373,6 +33594,9 @@
                       "$ref": "#/components/schemas/MessageEntity"
                     }
                   },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
                   }
@@ -33416,6 +33640,9 @@
                       "$ref": "#/components/schemas/MessageEntity"
                     }
                   },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
                   }
@@ -33458,6 +33685,9 @@
                     "items": {
                       "$ref": "#/components/schemas/MessageEntity"
                     }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
                   },
                   "reply_markup": {
                     "$ref": "#/components/schemas/InlineKeyboardMarkup"
@@ -34628,11 +34858,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "sticker": {
                     "anyOf": [
@@ -34711,11 +34938,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "sticker": {
                     "anyOf": [
@@ -34794,11 +35018,8 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
-                  "receiver_user_id": {
-                    "type": "integer"
-                  },
-                  "callback_query_id": {
-                    "type": "string"
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "sticker": {
                     "anyOf": [
@@ -36684,6 +36905,9 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
+                  },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
                   },
@@ -36751,6 +36975,9 @@
                   "direct_messages_topic_id": {
                     "type": "integer"
                   },
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
+                  },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
                   },
@@ -36817,6 +37044,9 @@
                   },
                   "direct_messages_topic_id": {
                     "type": "integer"
+                  },
+                  "ephemeral_message_parameters": {
+                    "$ref": "#/components/schemas/EphemeralMessageParameters"
                   },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
@@ -36940,6 +37170,12 @@
                   },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -36964,6 +37200,12 @@
                   },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
@@ -36988,6 +37230,12 @@
                   },
                   "rich_message": {
                     "$ref": "#/components/schemas/InputRichMessage"
+                  },
+                  "can_stop": {
+                    "type": "boolean"
+                  },
+                  "keep_on_stop": {
+                    "type": "boolean"
                   }
                 }
               }
