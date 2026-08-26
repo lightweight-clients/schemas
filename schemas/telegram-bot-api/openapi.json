@@ -7682,7 +7682,7 @@
         "type": "object"
       },
       "RichBlockExpandableBlockQuotation": {
-        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"expandable\".",
         "required": [
           "type",
           "text"
@@ -8288,7 +8288,7 @@
         "type": "object"
       },
       "InputRichBlockExpandableBlockQuotation": {
-        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"collapsed\".",
+        "description": "A block quotation, corresponding to the HTML tag <blockquote> with custom attribute \"expandable\".",
         "required": [
           "type",
           "text"
