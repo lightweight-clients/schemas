@@ -12,7 +12,7 @@ permissions:
   pull-requests: write
 
 env:
-  api_names: telegram-bot-api shikimori-graphql-api jikan-api
+  api_names: telegram-bot-api shikimori-graphql-api jikan-api bitbucket-cloud-api bitbucket-datacenter-api-9.4
 
 jobs:
   compare-versions:
@@ -118,6 +118,7 @@ jobs:
         run: |
           if [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "openapi" ]; then
             version=$(jq -r '.info.version' schemas/${{ matrix.api_name }}/openapi.json)
+            if [[ $version =~ ^[0-9]+\.[0-9]+$ ]]; then version="${version}.0"; fi
             echo "api_version=$version" >> $GITHUB_OUTPUT
           elif [ "${{ steps.parse-schema-type.outputs.schema_type }}" == "graphql" ]; then
             # GraphQL schema versioning is not standardized, so we use a placeholder
