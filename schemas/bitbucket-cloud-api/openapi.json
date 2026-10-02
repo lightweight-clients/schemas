@@ -14589,6 +14589,146 @@
         }
       ]
     },
+    "/repositories/{workspace}/{repo_slug}/pullrequests/{pull_request_id}/mergeability/checks": {
+      "get": {
+        "tags": [
+          "Pullrequests"
+        ],
+        "description": "Returns the mergeability checks Bitbucket performs for this pull request, and whether each one\ncurrently allows the pull request to be merged - simulating what the merge endpoint checks before\nactually merging.\n\nChecks cover pull request state, the current user's merge permissions, Git conflicts, configured\nstandard and custom merge checks, and merge queue status when available. Each check's `blocking`\nattribute indicates whether it currently prevents merging. A failed check does not necessarily block a merge.\n\n`pullrequest_state_check`, `current_user_permission_check`, and `git_mergeability_check` cover state,\npermission, and Git eligibility. One `standard_merge_check` is included per configured branch/merge\nrestriction, and one `custom_pre_merge_check`/`custom_on_merge_check` per activated custom check - both\nomitted entirely, not reported as passing, when not configured. Not exhaustive: conditions Bitbucket can't\nevaluate without attempting the merge (e.g. dependency-merge requirements) aren't included. See\n`PullRequestMergeabilityCheckSchema` for per-check fields, and `q` below to exclude the checks that\nare expensive to evaluate.\n\nFor repositories with merge queues enabled, a `merge_queue_check` reports queue availability and\nwhether the pull request is already queued. It is included for open, non-draft pull requests when the\ndestination branch requires queueing, and for already-queued pull requests with a configured queue.\nThe check is omitted when no merge queue is configured for the destination branch. When the check is\npresent, `merge_queue` contains that configured queue's UUID, name and state. Already-queued pull requests\nreturn their blocking state check and any applicable queue check, without evaluating Git or other merge checks.\nA failed queue configuration read fails the whole request with `500`, as for custom merge check results.\n\nReturns `500` if custom merge checks are configured but their results aren't currently retrievable,\nsince the real merge action requires them too and would fail the same way.",
+        "summary": "List pull request mergeability checks",
+        "responses": {
+          "200": {
+            "description": "The collection of checks that determine whether the specified pull request can be merged.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/pullrequest_mergeability_checks"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "If `q` is an unsupported filter expression.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "If the request was not authenticated.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "If the authenticated user does not have access to the pull request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "If the repository or pull request does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "If the mergeability request rate limit has been exceeded."
+          },
+          "500": {
+            "description": "If activated custom merge check results or enabled merge queue configuration could not be retrieved.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Only a limited subset of BBQL is supported here. Checks that are expensive to calculate can be excluded: `type!=\"git_mergeability_check\"` skips Git conflict evaluation, and `check.kind!=\"maximum_commits_behind\"` skips the bounded Git ancestry check behind that standard merge check. Combine both with `AND` (either order). Anything else returns `400 Bad Request`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "oauth2": [
+              "pullrequest"
+            ]
+          },
+          {
+            "basic": []
+          },
+          {
+            "api_key": []
+          }
+        ],
+        "x-atlassian-oauth2-scopes": [
+          {
+            "state": "Current",
+            "scheme": "oauth2",
+            "scopes": [
+              "read:pullrequest:bitbucket"
+            ]
+          }
+        ],
+        "x-atlassian-auth-types": [
+          "forge-oauth2",
+          "api-token"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "pull_request_id",
+          "in": "path",
+          "description": "The id of the pull request.",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        },
+        {
+          "name": "repo_slug",
+          "in": "path",
+          "description": "This can either be the repository slug or the UUID of the repository,\nsurrounded by curly-braces, for example: `{repository UUID}`.\n",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "workspace",
+          "in": "path",
+          "description": "This can either be the workspace ID (slug) or the workspace UUID\nsurrounded by curly-braces, for example: `{workspace UUID}`.\n",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
     "/repositories/{workspace}/{repo_slug}/pullrequests/{pull_request_id}/patch": {
       "get": {
         "tags": [
@@ -26676,7 +26816,7 @@
       "description": "A workspace is where you create repositories, collaborate on\nyour code, and organize different streams of work in your Bitbucket\nCloud account. Workspaces replace the use of teams and users in API\ncalls.\n"
     }
   ],
-  "x-revision": "359ec9d1b97e",
+  "x-revision": "6856b45887d7",
   "x-atlassian-narrative": {
     "documents": [
       {
@@ -29619,6 +29759,38 @@
           }
         }
       },
+      "merge_queue": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/object"
+          },
+          {
+            "type": "object",
+            "title": "Merge Queue",
+            "description": "Identity and state of the merge queue configured for the destination branch.",
+            "properties": {
+              "uuid": {
+                "type": "string",
+                "description": "The merge queue UUID."
+              },
+              "name": {
+                "type": "string",
+                "description": "The merge queue name."
+              },
+              "state": {
+                "type": "string",
+                "description": "The configuration state returned by the merge queue service. Known values are `ACTIVE`, `PAUSED`, `DRAINING`, `SUSPENDED`, `INACTIVE`, and `UNKNOWN`. `ACTIVE` accepts entries; `PAUSED` accepts entries but pauses landing; `DRAINING` and `SUSPENDED` block entry; `INACTIVE` does not require queueing. Unknown values are returned unchanged and follow the existing queue behavior: only `DRAINING` and `SUSPENDED` block entry."
+              }
+            },
+            "required": [
+              "uuid",
+              "name",
+              "state"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
       "search_code_search_result": {
         "type": "object",
         "properties": {
@@ -29822,6 +29994,357 @@
         },
         "required": [
           "permission"
+        ],
+        "additionalProperties": false
+      },
+      "pullrequest_mergeability_check": {
+        "type": "object",
+        "title": "Pull Request Mergeability Check",
+        "description": "A mergeability check. The `type` identifies the concrete check and its additional fields.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "pullrequest_state_check",
+              "current_user_permission_check",
+              "git_mergeability_check",
+              "standard_merge_check",
+              "custom_pre_merge_check",
+              "custom_on_merge_check",
+              "merge_queue_check"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Whether this check passed. `UNKNOWN` means the check could not be evaluated; it does not establish that the pull request is mergeable.",
+            "enum": [
+              "PASSED",
+              "FAILED",
+              "PENDING",
+              "SKIPPED",
+              "UNKNOWN"
+            ]
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this check must pass for the pull request to be mergeable."
+          },
+          "blocking": {
+            "type": "boolean",
+            "description": "Whether this check is currently preventing the pull request from being merged."
+          }
+        },
+        "required": [
+          "type",
+          "status",
+          "required",
+          "blocking"
+        ],
+        "additionalProperties": true,
+        "discriminator": {
+          "propertyName": "type"
+        }
+      },
+      "pullrequest_state_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Pull Request State Check",
+            "description": "Whether the pull request is in a mergeable state (open).",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "pullrequest_state_check"
+                ]
+              },
+              "state": {
+                "type": "string",
+                "description": "The public state of the pull request. Note that a queued pull request is reported as `OPEN` here but as `blocking: true`, since it cannot be merged again while a merge is already in progress.",
+                "enum": [
+                  "OPEN",
+                  "DRAFT",
+                  "MERGED",
+                  "DECLINED",
+                  "SUPERSEDED",
+                  "UNKNOWN"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "state"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "current_user_permission_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Current User Permission Check",
+            "description": "Whether the requesting user has write access to the destination repository, is allowed to merge into the destination branch under any branch restrictions, and that the pull request's source repository still exists.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "current_user_permission_check"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "git_mergeability_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Git Mergeability Check",
+            "description": "The Git-level evaluation of the pull request's source and destination heads.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "git_mergeability_check"
+                ]
+              },
+              "reason": {
+                "type": "string",
+                "description": "Present when `status` is `PASSED` or `FAILED`: the Git-level outcome for the selected source and destination heads. Omitted when `status` is `UNKNOWN` (Bitbucket could not evaluate Git mergeability, e.g. due to a timeout); this doesn't imply the pull request is conflict-free.",
+                "enum": [
+                  "clean",
+                  "conflicts",
+                  "merge_impossible"
+                ]
+              },
+              "links": {
+                "type": "object",
+                "description": "Present when this check is blocking: `{'details': {'href': '...'}}`, linking to this pull request's `conflicts` endpoint.",
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "standard_merge_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Standard Merge Check",
+            "description": "One per configured branch/merge restriction that applies to this pull request, identified by its `check.kind` (e.g. `minimum_approvals`, `minimum_successful_builds`, `resolved_tasks`). A restriction that isn't configured for this pull request is omitted entirely rather than reported as passing.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "standard_merge_check"
+                ]
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether merge-check enforcement is currently active for the pull request (a repository-wide setting), not a property of the individual check."
+              },
+              "blocking": {
+                "type": "boolean",
+                "description": "Whether this check is currently preventing the pull request from being merged."
+              },
+              "check": {
+                "type": "object",
+                "description": "Identifies which branch-restriction-backed check this is, as `{'type': 'standard_merge_check_definition', 'kind': '...'}`. See `check.kind` in the endpoint documentation for the full list of supported kinds.",
+                "additionalProperties": true
+              },
+              "requirement": {
+                "type": "object",
+                "description": "The configured threshold for this check, keyed by a check.kind-specific field name (e.g. `{'minimum_approvals': 2}`). The shape varies per `check.kind`.",
+                "additionalProperties": true
+              },
+              "observed": {
+                "type": "object",
+                "description": "The current observed value for this check, keyed by a check.kind-specific field name (e.g. `{'approval_count': 1}`). The shape varies per `check.kind`.",
+                "additionalProperties": true
+              }
+            },
+            "required": [
+              "type",
+              "required",
+              "blocking",
+              "check",
+              "requirement",
+              "observed"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "custom_merge_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Custom Merge Check",
+            "description": "One per configured custom merge check, if the workspace has activated custom merge checks - omitted entirely otherwise. `type` is `custom_pre_merge_check` for a persisted result of a check that already ran before the merge action, or `custom_on_merge_check` for a check that runs as part of the merge action itself (which may be known but not yet triggered). This endpoint never triggers or retries a custom check, it only reports results. If custom checks are activated but their results cannot currently be retrieved, the whole request fails with `500` instead of omitting them or fabricating a placeholder - merging already requires custom checks to be retrievable, so this endpoint can't accurately report mergeability either.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "custom_pre_merge_check",
+                  "custom_on_merge_check"
+                ]
+              },
+              "check": {
+                "type": "object",
+                "description": "Identifies which custom check this is, as `{'type': 'custom_merge_check_definition', 'id': '...', 'name': '...'}`, where `id` is the ARI of the custom check extension.",
+                "additionalProperties": true
+              },
+              "uuid": {
+                "type": "string",
+                "description": "Present when a persisted result exists: the persisted custom check result UUID. Omitted for on-merge checks known but not yet triggered."
+              },
+              "message": {
+                "type": "string",
+                "description": "Present when the custom check provides one; omitted when absent."
+              }
+            },
+            "required": [
+              "type",
+              "check"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "custom_pre_merge_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/custom_merge_check"
+          },
+          {
+            "type": "object",
+            "title": "Custom Pre-merge Check",
+            "description": "The persisted result of a custom check that ran before the merge action.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "custom_pre_merge_check"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "custom_on_merge_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/custom_merge_check"
+          },
+          {
+            "type": "object",
+            "title": "Custom On-merge Check",
+            "description": "A custom check that runs as part of the merge action and may not have been triggered yet.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "custom_on_merge_check"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "merge_queue_check": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/pullrequest_mergeability_check"
+          },
+          {
+            "type": "object",
+            "title": "Merge Queue Check",
+            "description": "Whether the destination branch requires queueing and its merge queue accepts pull requests. Only `DRAINING` and `SUSPENDED` queues block entry; `INACTIVE` queues do not require queueing. Omitted when no queue is configured for the destination branch, or when no queue is required and the pull request is not already queued. A failed queue configuration read fails the whole request with `500`.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "merge_queue_check"
+                ]
+              },
+              "required": {
+                "type": "boolean",
+                "description": "Whether the destination branch currently requires queueing."
+              },
+              "blocking": {
+                "type": "boolean",
+                "description": "Whether this check is currently preventing the pull request from being merged."
+              },
+              "queued": {
+                "type": "boolean",
+                "description": "Whether the pull request is already queued, according to its current lifecycle state."
+              },
+              "merge_queue": {
+                "$ref": "#/components/schemas/merge_queue"
+              }
+            },
+            "required": [
+              "type",
+              "required",
+              "blocking",
+              "queued",
+              "merge_queue"
+            ],
+            "additionalProperties": true
+          }
+        ]
+      },
+      "pullrequest_mergeability_checks": {
+        "type": "object",
+        "title": "Pull Request Mergeability Checks",
+        "description": "The collection of checks that determine whether the specified pull request can be merged. Every check has a `type` identifying its shape - see `pullrequest_state_check`, `current_user_permission_check`, `git_mergeability_check`, `standard_merge_check`, `custom_merge_check`, and `merge_queue_check` for what each type covers.",
+        "properties": {
+          "size": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/pullrequest_mergeability_check"
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "values"
         ],
         "additionalProperties": false
       },
