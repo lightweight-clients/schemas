@@ -87,14 +87,19 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           CLIENTS: ${{ steps.clients.outputs.clients }}
+          SCHEMA_REF: ${{ github.sha }}
         run: |
           set -euo pipefail
 
           echo "$CLIENTS" | jq -r '.[]' | while IFS= read -r client_repo; do
-            echo "Dispatching regeneration for $client_repo"
-            gh api \
-              --method POST \
-              -H "Accept: application/vnd.github+json" \
-              "/repos/${GITHUB_REPOSITORY_OWNER}/$client_repo/actions/workflows/regenerate-client.yml/dispatches" \
-              -f ref=master
+            echo "Dispatching regeneration for $client_repo at schemas revision $SCHEMA_REF"
+            jq -cn \
+              --arg ref master \
+              --arg schema_ref "$SCHEMA_REF" \
+              '{ref: $ref, inputs: {schema_ref: $schema_ref}}' \
+              | gh api \
+                  --method POST \
+                  -H "Accept: application/vnd.github+json" \
+                  "/repos/${GITHUB_REPOSITORY_OWNER}/$client_repo/actions/workflows/regenerate-client.yml/dispatches" \
+                  --input -
           done
