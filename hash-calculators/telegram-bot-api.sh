@@ -1,7 +1,13 @@
 set -e
 
-http_content=$(curl -s https://core.telegram.org/bots/api)
-normalized_content=$(echo "$http_content" | sed '/<!-- page generated in .*ms -->/d')
-crc32_hash=$(echo "$normalized_content" | cksum | awk '{print $1}')
+diagnostics_dir="diagnostics/telegram-bot-api"
+raw_content="$diagnostics_dir/raw.html"
+normalized_content="$diagnostics_dir/normalized.html"
 
-echo $crc32_hash
+mkdir -p "$diagnostics_dir"
+curl -s https://core.telegram.org/bots/api --output "$raw_content"
+normalized=$(sed '/<!-- page generated in .*ms -->/d' "$raw_content")
+printf '%s\n' "$normalized" > "$normalized_content"
+crc32_hash=$(cksum < "$normalized_content" | awk '{print $1}')
+
+echo "$crc32_hash"
