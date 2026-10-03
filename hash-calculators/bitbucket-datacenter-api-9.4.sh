@@ -1,3 +1,11 @@
-set -e
+set -euo pipefail
 
-curl -fsSL https://dac-static.atlassian.com/server/bitbucket/9.4.swagger.v3.json | sha256sum | awk '{print $1}'
+curl -fsSL \
+    --retry 3 \
+    --retry-delay 2 \
+    --retry-max-time 30 \
+    --connect-timeout 10 \
+    --max-time 120 \
+    "https://dac-static.atlassian.com/server/bitbucket/9.4.swagger.v3.json" \
+    | sha256sum \
+    | awk '{print $1}'
