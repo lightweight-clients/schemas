@@ -1,0 +1,100 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow
+
+name: Dispatch client regeneration
+
+on:
+  push:
+    branches: ["master"]
+    paths:
+      - "schemas/**"
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch-clients:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Find affected clients
+        id: clients
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          clients='[]'
+
+          while IFS= read -r api_name; do
+            [ -n "$api_name" ] || continue
+
+            case "$api_name" in
+              telegram-bot-api)
+                client_repo="telegram-bot-api-lightweight-client"
+                ;;
+              shikimori-graphql-api)
+                client_repo="shikimori-graphql-api-lightweight-client"
+                ;;
+              jikan-api)
+                client_repo="jikan-api-lightweight-client"
+                ;;
+              bitbucket-cloud-api)
+                client_repo="bitbucket-cloud-api-lightweight-client"
+                ;;
+              bitbucket-datacenter-api-9.4)
+                client_repo="bitbucket-datacenter-api-lightweight-client"
+                ;;
+              *)
+                echo "No client mapping for schema: $api_name" >&2
+                exit 1
+                ;;
+            esac
+
+            clients=$(jq -cn \
+              --argjson clients "$clients" \
+              --arg client "$client_repo" \
+              '$clients + [$client]')
+          done < <(
+            git diff --name-only "$BEFORE_SHA" "$AFTER_SHA" -- 'schemas/**' \
+              | awk -F/ 'NF >= 3 {print $2}' \
+              | sort -u
+          )
+
+          echo "clients=$clients" >> "$GITHUB_OUTPUT"
+
+      - name: Create client-dispatch token
+        if: ${{ steps.clients.outputs.clients != '[]' }}
+        id: app-token
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.CLIENT_REGENERATION_APP_CLIENT_ID }}
+          private-key: ${{ secrets.CLIENT_REGENERATION_APP_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: |
+            telegram-bot-api-lightweight-client
+            shikimori-graphql-api-lightweight-client
+            jikan-api-lightweight-client
+            bitbucket-cloud-api-lightweight-client
+            bitbucket-datacenter-api-lightweight-client
+          permission-actions: write
+
+      - name: Dispatch client regeneration
+        if: ${{ steps.clients.outputs.clients != '[]' }}
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          CLIENTS: ${{ steps.clients.outputs.clients }}
+        run: |
+          set -euo pipefail
+
+          echo "$CLIENTS" | jq -r '.[]' | while IFS= read -r client_repo; do
+            echo "Dispatching regeneration for $client_repo"
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${GITHUB_REPOSITORY_OWNER}/$client_repo/actions/workflows/regenerate-client.yml/dispatches" \
+              -f ref=master
+          done
