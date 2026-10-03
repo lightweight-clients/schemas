@@ -78,6 +78,22 @@ jobs:
           json_array="[$(echo "$updated_apis" | sed 's/,$//')]"
           echo "updated_api_names=$json_array" >> "$GITHUB_OUTPUT"
 
+      - name: Upload Telegram drift diagnostics
+        id: upload-telegram-drift-diagnostics
+        if: ${{ contains(fromJson(steps.compare-hashes.outputs.updated_api_names), 'telegram-bot-api') }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: telegram-bot-api-drift
+          path: diagnostics/telegram-bot-api/
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Add Telegram drift artifact to job summary
+        if: ${{ steps.upload-telegram-drift-diagnostics.outcome == 'success' }}
+        run: |
+          echo "### Telegram Bot API hash drift" >> "$GITHUB_STEP_SUMMARY"
+          echo "[Download diagnostic artifact](${{ steps.upload-telegram-drift-diagnostics.outputs.artifact-url }})" >> "$GITHUB_STEP_SUMMARY"
+
   update-clients:
     needs: compare-versions
     runs-on: ubuntu-latest
