@@ -2134,12 +2134,6 @@
               "deprecationReason": null
             },
             {
-              "name": "amediateka",
-              "description": "Amediateka",
-              "isDeprecated": false,
-              "deprecationReason": null
-            },
-            {
               "name": "anime_db",
               "description": "AniDB",
               "isDeprecated": false,
@@ -2172,6 +2166,18 @@
             {
               "name": "smotret_anime",
               "description": "Anime 365",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "shiki",
+              "description": "Shikimori",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "amediateka",
+              "description": "Amediateka",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -2236,8 +2242,14 @@
               "deprecationReason": null
             },
             {
-              "name": "readmanga",
-              "description": "ReadManga",
+              "name": "remanga",
+              "description": "ReManga",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "senkuro",
+              "description": "Senkuro",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -2248,14 +2260,14 @@
               "deprecationReason": null
             },
             {
-              "name": "remanga",
-              "description": "ReManga",
+              "name": "mangaupdates",
+              "description": "Baka-Updates",
               "isDeprecated": false,
               "deprecationReason": null
             },
             {
-              "name": "mangaupdates",
-              "description": "Baka-Updates",
+              "name": "readmanga",
+              "description": "ReadManga",
               "isDeprecated": false,
               "deprecationReason": null
             },
@@ -3383,6 +3395,18 @@
               "description": "created_at_desc",
               "isDeprecated": false,
               "deprecationReason": null
+            },
+            {
+              "name": "updated_at",
+              "description": "By field updated_at on entity",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "updated_at_desc",
+              "description": "updated_at_desc",
+              "isDeprecated": false,
+              "deprecationReason": null
             }
           ],
           "possibleTypes": null
@@ -4273,17 +4297,9 @@
                   "name": "ids",
                   "description": null,
                   "type": {
-                    "kind": "LIST",
-                    "name": null,
-                    "ofType": {
-                      "kind": "NON_NULL",
-                      "name": null,
-                      "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
-                        "ofType": null
-                      }
-                    }
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
                   },
                   "defaultValue": null
                 },
