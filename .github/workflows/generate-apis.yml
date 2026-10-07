@@ -81,7 +81,7 @@ jobs:
       - name: Upload Telegram drift diagnostics
         id: upload-telegram-drift-diagnostics
         if: ${{ contains(fromJson(steps.compare-hashes.outputs.updated_api_names), 'telegram-bot-api') }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: telegram-bot-api-drift
           path: diagnostics/telegram-bot-api/
