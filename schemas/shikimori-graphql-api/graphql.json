@@ -2212,6 +2212,12 @@
               "deprecationReason": null
             },
             {
+              "name": "deep",
+              "description": "DEEP",
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
               "name": "kinopoisk_hd",
               "description": "KinoPoisk HD",
               "isDeprecated": false,
