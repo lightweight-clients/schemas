@@ -27739,7 +27739,7 @@
       "description": "A workspace is where you create repositories, collaborate on\nyour code, and organize different streams of work in your Bitbucket\nCloud account. Workspaces replace the use of teams and users in API\ncalls.\n"
     }
   ],
-  "x-revision": "548aab5d436e",
+  "x-revision": "3212edb6cdbe",
   "x-atlassian-narrative": {
     "documents": [
       {
@@ -31941,6 +31941,10 @@
                   "no_forks"
                 ]
               },
+              "enforced_signed_commits": {
+                "type": "boolean",
+                "description": "Whether signed commits are required for this repository: true when the workspace has Premium and the repository, its project, or its workspace enforces them; otherwise false."
+              },
               "project": {
                 "$ref": "#/components/schemas/project"
               },
@@ -35595,6 +35599,10 @@
               "is_personal": {
                 "type": "boolean",
                 "description": "Indicates whether the workspace belongs to an individual user."
+              },
+              "enforced_signed_commits": {
+                "type": "boolean",
+                "description": "The workspace's stored signed-commit enforcement setting. Unset values are returned as false. Enforcement requires a Premium plan."
               },
               "is_privacy_enforced": {
                 "type": "boolean",
