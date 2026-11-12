@@ -3,7 +3,7 @@
   "info": {
     "title": "Telegram Bot API",
     "description": "Auto-generated OpenAPI schema by TGScraper.",
-    "version": "10.3.0"
+    "version": "10.4.0"
   },
   "servers": [
     {
@@ -211,6 +211,12 @@
           },
           "callback_query": {
             "$ref": "#/components/schemas/CallbackQuery"
+          },
+          "widget_query": {
+            "$ref": "#/components/schemas/WidgetQuery"
+          },
+          "shared_widget_query": {
+            "$ref": "#/components/schemas/SharedWidgetQuery"
           },
           "shipping_query": {
             "$ref": "#/components/schemas/ShippingQuery"
@@ -584,6 +590,12 @@
           },
           "community": {
             "$ref": "#/components/schemas/Community"
+          },
+          "ton_wallet_card": {
+            "$ref": "#/components/schemas/TonWalletCard"
+          },
+          "share_theme": {
+            "$ref": "#/components/schemas/ChatShareTheme"
           }
         },
         "type": "object"
@@ -756,6 +768,9 @@
           },
           "voice": {
             "$ref": "#/components/schemas/Voice"
+          },
+          "widget": {
+            "$ref": "#/components/schemas/Widget"
           },
           "caption": {
             "type": "string"
@@ -943,6 +958,9 @@
           "paid_message_price_changed": {
             "$ref": "#/components/schemas/PaidMessagePriceChanged"
           },
+          "paid_messages_waived": {
+            "$ref": "#/components/schemas/PaidMessagesWaived"
+          },
           "poll_option_added": {
             "$ref": "#/components/schemas/PollOptionAdded"
           },
@@ -963,6 +981,9 @@
           },
           "suggested_post_refunded": {
             "$ref": "#/components/schemas/SuggestedPostRefunded"
+          },
+          "ton_wallet_transfer": {
+            "$ref": "#/components/schemas/TonWalletTransfer"
           },
           "video_chat_scheduled": {
             "$ref": "#/components/schemas/VideoChatScheduled"
@@ -1082,6 +1103,12 @@
               "$ref": "#/components/schemas/MessageEntity"
             }
           },
+          "rich_texts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichText"
+            }
+          },
           "position": {
             "type": "integer"
           },
@@ -1145,6 +1172,9 @@
           },
           "voice": {
             "$ref": "#/components/schemas/Voice"
+          },
+          "widget": {
+            "$ref": "#/components/schemas/Widget"
           },
           "has_media_spoiler": {
             "type": "boolean",
@@ -1217,6 +1247,12 @@
               "$ref": "#/components/schemas/MessageEntity"
             }
           },
+          "quote_rich_texts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RichText"
+            }
+          },
           "quote_position": {
             "type": "integer"
           },
@@ -1231,9 +1267,6 @@
       },
       "EphemeralMessageParameters": {
         "description": "",
-        "required": [
-          "receiver_user_id"
-        ],
         "properties": {
           "receiver_user_id": {
             "type": "integer"
@@ -1683,6 +1716,33 @@
             "type": "integer"
           }
         },
+        "type": "object"
+      },
+      "Widget": {
+        "description": "This object describes an HTML widget.",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "html": {
+            "type": "string"
+          },
+          "public_data": {
+            "type": "string"
+          },
+          "chat_data": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "html"
+        ],
         "type": "object"
       },
       "PaidMediaInfo": {
@@ -3052,6 +3112,33 @@
         ],
         "type": "object"
       },
+      "PaidMessagesWaived": {
+        "description": "Describes a service message about the sender of the message using a link of the other user, which allows sending messages to the user without paying Telegram Stars. Currently holds no information.",
+        "type": "object"
+      },
+      "TonWalletTransfer": {
+        "description": "Describes a service message about a transfer with a TON wallet.",
+        "required": [
+          "transaction_id",
+          "peer_address",
+          "amount"
+        ],
+        "properties": {
+          "transaction_id": {
+            "type": "string"
+          },
+          "peer_address": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "GiveawayCreated": {
         "description": "This object represents a service message about the creation of a scheduled giveaway.",
         "properties": {
@@ -3689,6 +3776,168 @@
             "type": "string"
           },
           "game_short_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WidgetQueryType": {
+        "description": "This object describes the type of a query from a widget. Currently, it can be one of",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/WidgetQueryTypeData"
+          },
+          {
+            "$ref": "#/components/schemas/WidgetQueryTypeSignData"
+          },
+          {
+            "$ref": "#/components/schemas/WidgetQueryTypeSentTransaction"
+          }
+        ]
+      },
+      "WidgetQueryTypeData": {
+        "description": "The query contains data for the bot.",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "wallet_card": {
+            "$ref": "#/components/schemas/TonWalletCard"
+          }
+        },
+        "type": "object"
+      },
+      "WidgetQueryTypeSignData": {
+        "description": "The query contains data signed by a TON wallet of the user who sent the query. The data is signed for the domain bot<bot_id>, where <bot_id> is the identifier of the bot.",
+        "required": [
+          "type",
+          "wallet",
+          "sign_data"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "wallet": {
+            "$ref": "#/components/schemas/WidgetQueryWallet"
+          },
+          "sign_data": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WidgetQueryTypeSentTransaction": {
+        "description": "The query notifies the bot about a transaction sent from a TON wallet of the user who sent the query.",
+        "required": [
+          "type",
+          "wallet",
+          "msg_hash"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "wallet": {
+            "$ref": "#/components/schemas/WidgetQueryWallet"
+          },
+          "msg_hash": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WidgetQueryWallet": {
+        "description": "This object describes a TON wallet of the user, which is used in a query from a widget.",
+        "required": [
+          "address",
+          "amount"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "public_key": {
+            "type": "string"
+          },
+          "state_init": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "WidgetQuery": {
+        "description": "This object represents an incoming query from a widget in a message sent by the bot or via the bot. Use answerWidgetQuery to answer the query. Each user can send at most 5 queries per 5 seconds to the bot from all its widgets.",
+        "required": [
+          "id",
+          "from",
+          "chat_instance",
+          "type",
+          "data"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "from": {
+            "$ref": "#/components/schemas/User"
+          },
+          "chat": {
+            "$ref": "#/components/schemas/Chat"
+          },
+          "message_id": {
+            "type": "integer"
+          },
+          "inline_message_id": {
+            "type": "string"
+          },
+          "chat_instance": {
+            "type": "string"
+          },
+          "chat_type": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WidgetQueryType"
+          },
+          "data": {
+            "type": "string"
+          },
+          "widget_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SharedWidgetQuery": {
+        "description": "This object represents an incoming query from a forwarded message with a shared widget created by the bot. Use answerWidgetQuery to answer the query. Each user can send at most 5 queries per 5 seconds to the bot from all its widgets.",
+        "required": [
+          "id",
+          "from",
+          "type",
+          "data",
+          "widget_id"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "from": {
+            "$ref": "#/components/schemas/User"
+          },
+          "type": {
+            "$ref": "#/components/schemas/WidgetQueryType"
+          },
+          "data": {
+            "type": "string"
+          },
+          "widget_id": {
             "type": "string"
           }
         },
@@ -4388,8 +4637,8 @@
         },
         "type": "object"
       },
-      "StoryAreaPosition": {
-        "description": "Describes the position of a clickable area within a story.",
+      "AreaPosition": {
+        "description": "Describes the position of a rectangle area on a story media or a TON wallet card.",
         "required": [
           "x_percentage",
           "y_percentage",
@@ -4416,6 +4665,227 @@
           },
           "corner_radius_percentage": {
             "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "TonNft": {
+        "description": "This object represents an NFT in the TON blockchain.",
+        "required": [
+          "address",
+          "index",
+          "name",
+          "description"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "collection_address": {
+            "type": "string"
+          },
+          "index": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TonNftAttribute"
+            }
+          },
+          "gift": {
+            "$ref": "#/components/schemas/UniqueGift"
+          }
+        },
+        "type": "object"
+      },
+      "TonNftAttribute": {
+        "description": "This object represents an attribute of an NFT in the TON blockchain.",
+        "required": [
+          "trait_type",
+          "value"
+        ],
+        "properties": {
+          "trait_type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TonWalletCardSticker": {
+        "description": "This object describes a sticker on a TON wallet card.",
+        "required": [
+          "position",
+          "nft"
+        ],
+        "properties": {
+          "position": {
+            "$ref": "#/components/schemas/AreaPosition"
+          },
+          "nft": {
+            "$ref": "#/components/schemas/TonNft"
+          }
+        },
+        "type": "object"
+      },
+      "TonWalletCard": {
+        "description": "This object describes a TON wallet card, which is shown on the profile page of a user to everyone.",
+        "required": [
+          "address",
+          "amount",
+          "stickers"
+        ],
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "string"
+          },
+          "stickers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TonWalletCardSticker"
+            }
+          },
+          "background_nft_address": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EmojiType": {
+        "description": "This object describes an emoji. Currently, it can be one of",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/EmojiTypeEmoji"
+          },
+          {
+            "$ref": "#/components/schemas/EmojiTypeCustomEmoji"
+          }
+        ]
+      },
+      "EmojiTypeEmoji": {
+        "description": "A regular emoji.",
+        "required": [
+          "type",
+          "emoji"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "EmojiTypeCustomEmoji": {
+        "description": "A custom emoji.",
+        "required": [
+          "type",
+          "custom_emoji_id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "custom_emoji_id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ChatShareTheme": {
+        "description": "This object describes the theme of the screen for sharing a link to a user or a chat. Currently, it can be one of",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/ChatShareThemeEmoji"
+          },
+          {
+            "$ref": "#/components/schemas/ChatShareThemeUniqueGift"
+          }
+        ]
+      },
+      "ChatShareThemeEmoji": {
+        "description": "The theme with emoji placed on a background.",
+        "required": [
+          "type",
+          "emojis"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "emojis": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmojiType"
+            }
+          },
+          "background_backdrop_id": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ChatShareThemeUniqueGift": {
+        "description": "The theme based on a unique gift owned by the user or the chat.",
+        "required": [
+          "type",
+          "gift"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "gift": {
+            "$ref": "#/components/schemas/UniqueGift"
+          }
+        },
+        "type": "object"
+      },
+      "ChatShareThemeBackdrops": {
+        "description": "This object contains a list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+        "required": [
+          "backdrops"
+        ],
+        "properties": {
+          "backdrops": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChatShareThemeBackdrop"
+            }
+          }
+        },
+        "type": "object"
+      },
+      "ChatShareThemeBackdrop": {
+        "description": "This object describes a backdrop, which can be used as the background of a theme of the screen for sharing a link to a user or a chat.",
+        "required": [
+          "id",
+          "name",
+          "colors"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "colors": {
+            "$ref": "#/components/schemas/UniqueGiftBackdropColors"
           }
         },
         "type": "object"
@@ -4570,7 +5040,7 @@
         ],
         "properties": {
           "position": {
-            "$ref": "#/components/schemas/StoryAreaPosition"
+            "$ref": "#/components/schemas/AreaPosition"
           },
           "type": {
             "$ref": "#/components/schemas/StoryAreaType"
@@ -6867,6 +7337,9 @@
             "$ref": "#/components/schemas/RichTextBankCardNumber"
           },
           {
+            "$ref": "#/components/schemas/RichTextTonAddress"
+          },
+          {
             "$ref": "#/components/schemas/RichTextMention"
           },
           {
@@ -7194,6 +7667,26 @@
             "$ref": "#/components/schemas/RichText"
           },
           "bank_card_number": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RichTextTonAddress": {
+        "description": "An address in the TON blockchain.",
+        "required": [
+          "type",
+          "text",
+          "address"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "text": {
+            "$ref": "#/components/schemas/RichText"
+          },
+          "address": {
             "type": "string"
           }
         },
@@ -9719,6 +10212,12 @@
           },
           {
             "$ref": "#/components/schemas/InputInvoiceMessageContent"
+          },
+          {
+            "$ref": "#/components/schemas/InputWidgetMessageContent"
+          },
+          {
+            "$ref": "#/components/schemas/InputSharedWidgetMessageContent"
           }
         ]
       },
@@ -9918,6 +10417,81 @@
             "type": "boolean"
           },
           "is_flexible": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputWidgetMessageContent": {
+        "description": "Represents the content of a message with an HTML widget to be sent as the result of an inline query. Currently, widgets can't be sent in response to inline queries in the production environment.",
+        "required": [
+          "html"
+        ],
+        "properties": {
+          "html": {
+            "type": "string"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "public_data": {
+            "type": "string"
+          },
+          "chat_data": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "show_caption_above_media": {
+            "type": "boolean"
+          },
+          "allow_queries": {
+            "type": "boolean"
+          },
+          "is_shared": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "InputSharedWidgetMessageContent": {
+        "description": "Represents the content of a message with a shared widget to be sent as the result of an inline query. Currently, widgets can't be sent in response to inline queries in the production environment.",
+        "required": [
+          "widget_id"
+        ],
+        "properties": {
+          "widget_id": {
+            "type": "string"
+          },
+          "chat_data": {
+            "type": "string"
+          },
+          "caption": {
+            "type": "string"
+          },
+          "parse_mode": {
+            "type": "string"
+          },
+          "caption_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageEntity"
+            }
+          },
+          "show_caption_above_media": {
             "type": "boolean"
           }
         },
@@ -11690,7 +12264,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "text"
                 ]
               }
@@ -11772,7 +12345,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "text"
                 ]
               }
@@ -11854,7 +12426,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "text"
                 ]
               }
@@ -12349,7 +12920,7 @@
       }
     },
     "/copyMessage": {
-      "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
+      "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, invoice messages, and widget messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
       "post": {
         "requestBody": {
           "required": true,
@@ -12686,7 +13257,7 @@
       }
     },
     "/copyMessages": {
-      "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of MessageId of the sent messages is returned.",
+      "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, invoice messages, and widget messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_ids is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an Array of MessageId of the sent messages is returned.",
       "post": {
         "requestBody": {
           "required": true,
@@ -13001,7 +13572,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "photo"
                 ]
               }
@@ -13096,7 +13666,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "photo"
                 ]
               }
@@ -13191,7 +13760,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "photo"
                 ]
               }
@@ -13354,7 +13922,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "live_photo",
                   "photo"
                 ]
@@ -13460,7 +14027,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "live_photo",
                   "photo"
                 ]
@@ -13566,7 +14132,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "live_photo",
                   "photo"
                 ]
@@ -13733,7 +14298,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "audio"
                 ]
               }
@@ -13841,7 +14405,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "audio"
                 ]
               }
@@ -13949,7 +14512,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "audio"
                 ]
               }
@@ -14109,7 +14671,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "document"
                 ]
               }
@@ -14211,7 +14772,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "document"
                 ]
               }
@@ -14313,7 +14873,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "document"
                 ]
               }
@@ -14501,7 +15060,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video"
                 ]
               }
@@ -14631,7 +15189,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video"
                 ]
               }
@@ -14761,7 +15318,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video"
                 ]
               }
@@ -14933,7 +15489,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "animation"
                 ]
               }
@@ -15047,7 +15602,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "animation"
                 ]
               }
@@ -15161,7 +15715,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "animation"
                 ]
               }
@@ -15311,7 +15864,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "voice"
                 ]
               }
@@ -15403,7 +15955,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "voice"
                 ]
               }
@@ -15495,7 +16046,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "voice"
                 ]
               }
@@ -15646,7 +16196,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video_note"
                 ]
               }
@@ -15739,7 +16288,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video_note"
                 ]
               }
@@ -15832,9 +16380,625 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "video_note"
                 ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/sendWidget": {
+      "description": "Use this method to send a message with an HTML widget. Currently, in the production environment, widgets can be sent only to private chats, and sent widgets automatically have protected content and therefore can't be forwarded. On success, the sent Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "html"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "html": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "allow_queries": {
+                    "type": "boolean"
+                  },
+                  "is_shared": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "html"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "html": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "allow_queries": {
+                    "type": "boolean"
+                  },
+                  "is_shared": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "html"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "html": {
+                    "type": "string"
+                  },
+                  "width": {
+                    "type": "integer"
+                  },
+                  "height": {
+                    "type": "integer"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "allow_queries": {
+                    "type": "boolean"
+                  },
+                  "is_shared": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/Message"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/sendSharedWidget": {
+      "description": "Use this method to send again a shared widget created by the bot. Currently, in the production environment, widgets can be sent only to private chats, and sent widgets automatically have protected content and therefore can't be forwarded. On success, the sent Message is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "widget_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "widget_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "chat_id",
+                  "widget_id"
+                ],
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_thread_id": {
+                    "type": "integer"
+                  },
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  },
+                  "caption": {
+                    "type": "string"
+                  },
+                  "parse_mode": {
+                    "type": "string"
+                  },
+                  "caption_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
+                  },
+                  "show_caption_above_media": {
+                    "type": "boolean"
+                  },
+                  "disable_notification": {
+                    "type": "boolean"
+                  },
+                  "protect_content": {
+                    "type": "boolean"
+                  },
+                  "allow_paid_broadcast": {
+                    "type": "boolean"
+                  },
+                  "message_effect_id": {
+                    "type": "string"
+                  },
+                  "reply_parameters": {
+                    "$ref": "#/components/schemas/ReplyParameters"
+                  },
+                  "reply_markup": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/InlineKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardMarkup"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ReplyKeyboardRemove"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ForceReply"
+                      }
+                    ]
+                  }
+                }
               }
             }
           }
@@ -16562,7 +17726,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude"
                 ]
@@ -16648,7 +17811,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude"
                 ]
@@ -16734,7 +17896,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude"
                 ]
@@ -16884,7 +18045,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude",
                   "title",
@@ -16978,7 +18138,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude",
                   "title",
@@ -17072,7 +18231,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "latitude",
                   "longitude",
                   "title",
@@ -17212,7 +18370,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "phone_number",
                   "first_name"
                 ]
@@ -17292,7 +18449,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "phone_number",
                   "first_name"
                 ]
@@ -17372,7 +18528,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "phone_number",
                   "first_name"
                 ]
@@ -23600,6 +24755,78 @@
         }
       }
     },
+    "/getChatShareThemeBackdrops": {
+      "description": "Use this method to get the list of backdrops, which can be used as the background of a theme of the screen for sharing a link to a user or a chat. Requires no parameters. Returns a ChatShareThemeBackdrops object.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/ChatShareThemeBackdrops"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/getUserPersonalChatMessages": {
       "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an Array of Message objects is returned.",
       "post": {
@@ -24036,7 +25263,7 @@
       }
     },
     "/createForumTopic": {
-      "description": "Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator right. Returns information about the created topic as a ForumTopic object.",
+      "description": "Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator right. In the case of a private chat, a link to the topic can be created in the format https://t.me/<bot_username>/<message_thread_id>; the link opens the topic only for the user. Returns information about the created topic as a ForumTopic object.",
       "post": {
         "requestBody": {
           "required": true,
@@ -25648,6 +26875,112 @@
                   },
                   "cache_time": {
                     "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/answerWidgetQuery": {
+      "description": "Use this method to send an answer to a query from a widget. The query must be answered within 15 seconds. The answer is received only by the widget that sent the query and doesn't change data of the widget; use editMessageWidgetData or editSharedWidgetData to change it. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_query_id"
+                ],
+                "properties": {
+                  "widget_query_id": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_query_id"
+                ],
+                "properties": {
+                  "widget_query_id": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_query_id"
+                ],
+                "properties": {
+                  "widget_query_id": {
+                    "type": "string"
+                  },
+                  "data": {
+                    "type": "string"
                   }
                 }
               }
@@ -28301,6 +29634,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -28317,6 +29659,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -28333,6 +29684,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -28414,6 +29774,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -28437,6 +29806,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -28460,6 +29838,15 @@
                   },
                   "custom_description": {
                     "type": "string"
+                  },
+                  "custom_description_parse_mode": {
+                    "type": "string"
+                  },
+                  "custom_description_entities": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/MessageEntity"
+                    }
                   }
                 }
               }
@@ -30424,6 +31811,103 @@
         }
       }
     },
+    "/getUniqueGift": {
+      "description": "Use this method to get information about a unique gift by its name. Returns a UniqueGift object on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "$ref": "#/components/schemas/UniqueGift"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/convertGiftToStars": {
       "description": "Converts a given regular gift to Telegram Stars. Requires the can_convert_gifts_to_stars business bot right. Returns True on success.",
       "post": {
@@ -30734,6 +32218,115 @@
                   },
                   "star_count": {
                     "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/deleteBusinessAccountGift": {
+      "description": "Deletes a regular gift owned by a managed business account without receiving Telegram Stars for it. Requires the can_convert_gifts_to_stars business bot right. The gift can be deleted only if it isn't limited (the field total_count of the Gift is omitted) and wasn't refunded. Returns True on success.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "owned_gift_id"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "owned_gift_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "owned_gift_id"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "owned_gift_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "business_connection_id",
+                  "owned_gift_id"
+                ],
+                "properties": {
+                  "business_connection_id": {
+                    "type": "string"
+                  },
+                  "owned_gift_id": {
+                    "type": "string"
                   }
                 }
               }
@@ -32884,6 +34477,268 @@
         }
       }
     },
+    "/editMessageWidgetData": {
+      "description": "Use this method to edit data of a widget in a message sent by the bot or via the bot (for inline bots). Public data of a shared widget can be changed at most once per second. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "chat_id": {
+                    "anyOf": [
+                      {
+                        "type": "integer"
+                      },
+                      {
+                        "type": "string"
+                      }
+                    ]
+                  },
+                  "message_id": {
+                    "type": "integer"
+                  },
+                  "inline_message_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "chat_data": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
+    "/editSharedWidgetData": {
+      "description": "Use this method to edit public data of a shared widget created by the bot. A shared widget can be edited at most once per second. On success, True is returned.",
+      "post": {
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_id",
+                  "public_data"
+                ],
+                "properties": {
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "cache_time": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_id",
+                  "public_data"
+                ],
+                "properties": {
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "cache_time": {
+                    "type": "integer"
+                  }
+                }
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "widget_id",
+                  "public_data"
+                ],
+                "properties": {
+                  "widget_id": {
+                    "type": "string"
+                  },
+                  "public_data": {
+                    "type": "string"
+                  },
+                  "cache_time": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Request was successful, the result is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Success"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "result": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "5XX": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "default": {
+            "$ref": "#/components/responses/UnknownError"
+          }
+        }
+      }
+    },
     "/editMessageReplyMarkup": {
       "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
       "post": {
@@ -34910,7 +36765,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "sticker"
                 ]
               }
@@ -34990,7 +36844,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "sticker"
                 ]
               }
@@ -35070,7 +36923,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "sticker"
                 ]
               }
@@ -36947,7 +38799,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "rich_message"
                 ]
               }
@@ -37017,7 +38868,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "rich_message"
                 ]
               }
@@ -37087,7 +38937,6 @@
                   }
                 },
                 "required": [
-                  "chat_id",
                   "rich_message"
                 ]
               }
