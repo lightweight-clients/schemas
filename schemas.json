@@ -18,10 +18,10 @@
     "updated_at": "2026-06-28T22:16:28Z"
   },
   "bitbucket-cloud-api": {
-    "schema_version": "2.0.0+20261110060110",
+    "schema_version": "2.0.0+20261121054404",
     "source_version": "2.0.0",
-    "source_hash": "35956399bf8d41d2acfd099b3d94ef1a08e0cfd6409a92077b94a1dacbc6abdc",
-    "updated_at": "2026-11-10T06:01:10Z"
+    "source_hash": "c67cc57dd6580d901454ea27f647f2b5bb109fe14dd29970a732239d598d8c6d",
+    "updated_at": "2026-11-21T05:44:04Z"
   },
   "bitbucket-datacenter-api-9.4": {
     "schema_version": "9.4.0+20260906194000",
